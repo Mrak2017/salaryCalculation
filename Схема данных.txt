@@ -1,0 +1,49 @@
+Сотрудник (Person)
+- Логин (Login, string, unique)
+- Пароль (Password, string)
+- Фамилия (LastName, string)
+- Имя (FirstName, string)
+- Отчество (MiddleName, string)
+- Дата устройства (StartDate, date)
+- Дата увольнения (EndDate, date)
+- Работает, уволен (Active, boolean)
+
+Отношение сотрудника к группе (Person2Group)
+- Ccылка на сотрудника (Person, fk, 1 к 1)
+- Группа (Group, enum (Employee/Manager/Salesman))
+- Дата начала действия (StartDate, date)
+- Дата окончания действия (EndDate, date)
+- Актуальность записи (Active, boolean)
+Unique Index on (Person + Active)
+
+Cтруктура организации (OrganizationStructure)
+- Ccылка на сотрудника (Person, fk, 1 к 1)
+- Ссылка на вышестоящую структуру (ParentItem, int)
+- MaterializedPath (Массив, по порядку, все айдишники вышестоящих сотрудников начиная с самого первого, array)
+
+Роли доступа (Roles)
+- Ссылка на сотрудника (Person, fk, 1 к 1)
+- Тип доступа (RoleType, enum (Admin))
+
+Предрассчитанная зарплата на текущий месяц (SallaryCache)
+- Ссылка на сотрудника (Person, fk, 1 к 1)
+- Значение (Value, float)
+
+Настройки (Configuration)
+- Имя настройки (Name, string)
+- Значение настройки (Value, string)
+{EmployeeBaseSallary: '100'}
+{EmployeeWorkExperienceRatio: '3'}
+{EmployeeWorkExperienceMaxRatio: '30'}
+{ManagerBaseSallary: '200'}
+{ManagerWorkExperienceRatio: '5'}
+{ManagerWorkExperienceMaxRatio: '40'}
+{ManagerSubordinateRatio: '0.5'}
+{SalesmanBaseSallary: '50'}
+{SalesmanWorkExperienceRatio: '1'}
+{SalesmanWorkExperienceMaxRatio: '35'}
+{SalesmanSubordinateRatio: '0.3'}
+
+----- Улучшения
+1) Логирующие таблицы на Person, Roles
+2) Таблицу ролей доступа нужно пересмотреть, под реальные кейсы использования приложения

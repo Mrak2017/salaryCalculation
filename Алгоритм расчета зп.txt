@@ -1,0 +1,131 @@
+- SallaryCalculator
+private ERROR_START_TEXT = "Ошибка при расчете заработной платы. ";
+
+private Dictionary<Person, float> calculationCache = null; 				// учитывать дату !!!!!!
+
+public float CalculateSallary(Person person, DateTime onDate) {
+	calculationCache = new Dictionary<Person, float>();
+	float result = CalculateSallaryInternal(person, onDate);
+	calculationCache = null;
+	return result;
+}
+
+private float CalculateSallaryInternal(Person person, DateTime onDate) {
+	findInCache();
+
+	PersonGroup group = PersonController.GetPersonGroupOnDate(person, onDate);
+	float result = CalculateSallaryBasePart(group, onDate);
+
+	switch(group) {
+		case PersonGroup.Employee:
+		break;
+
+		case PersonGroup.Manager:
+		result += CalculateManagerSallaryAddition(person, group, onDate);
+		break;
+
+		case PersonGroup.Salesman:
+		result += CalculateSalesmanSallaryAddition(person, group, onDate);
+		break;
+		
+		default:
+		throw new Exception(ERROR_START_TEXT _ "Не удалось определить группу сотрудника: " + person.Login);
+	}
+
+	return CheckResult(result, person);
+}
+
+private void CheckResult(float value, Person person) {
+	if (value <= 0) {
+		throw new Exception(ERROR_START_TEXT _ "При расчете зарплата получилась меньше либо равной нулю для сотрудника: " 
+					+ person.Login + ". Проверьте настройки системы");
+	}
+}
+
+private float CalculateSallaryBasePart(PersonGroup group, DateTime onDate) {
+	int workedYears = DateUtils.GetFullYearsBetweenDates(person.StartDate, onDate);
+	float baseSallary = GetBaseSallaryByGroup(group);
+	float workExpRatio = GetWorkExperienceRatioByGroup(group);
+	float workExpMaxRatio = GetWorkExperienceMaxRatioByGroup(group);
+
+	float workExpResultRatio = workExpRatio * workedYears;
+	if (workExpResultRatio > workExpMaxRatio) {
+		workExpResultRatio = workExpMaxRatio;
+	}
+	return baseSallary + (workExpResultRatio * baseSallary);
+}
+
+private float CalculateManagerSallaryAddition(Person person, PersonGroup group, DateTime onDate) {
+	float subordinateRatio = GetSubordinateRatioByGroup(group);
+	Person[] subordinates = PersonController.GetFirstLevelSubordinates(person);
+	float result = 0;
+	foreach (var sub in subordinates) {
+		result += CalculateSallary(sub, onDate);
+	}
+	return result * subordinateRatio;
+}
+
+private float CalculateSalesmanSallaryAddition(Person person, PersonGroup group, DateTime onDate) {
+	float subordinateRatio = GetSubordinateRatioByGroup(group);
+	Person[] subordinates = PersonController.GetAllSubordinates(person);
+	float result = 0;
+	foreach (var sub in subordinates) {
+		result += CalculateSallary(sub, onDate);
+	}
+	return result * subordinateRatio;
+}
+
+private float GetBaseSallaryByGroup(PersonGroup group) {
+	// предусмотреть дефолтное значение
+	return ConfigurationController.GetFloatCastedValueByName(group.Name + ConfigurationController.BASE_SALLARY_POSTFIX);
+}
+
+private float GetWorkExperienceRatioByGroup(PersonGroup group) {
+	return ConfigurationController.GetFloatCastedValueByName(group.Name + ConfigurationController.WORK_EXPERIENCE_RATIO_POSTFIX);
+}
+
+private float GetWorkExperienceMaxRatioByGroup(PersonGroup group) {
+	return ConfigurationController.GetFloatCastedValueByName(group.Name + ConfigurationController.WORK_EXPERIENCE_MAX_RATIO_POSTFIX);
+}
+
+private float GetSubordinateRatioByGroup(PersonGroup group) {
+	return ConfigurationController.GetFloatCastedValueByName(group.Name + ConfigurationController.SUBORDINATE_RATIO_POSTFIX);
+}
+
+- DateUtils
+public int GetFullYearsBetweenDates(DateTime startDate, DateTime endDate) {
+	int result = endDate.Year - startDate.Year;
+	if (startDate > endDate.AddYears(-result)) {
+		result--;
+	}
+	return result;
+}
+
+- ConfigurationController
+
+public static BASE_SALLARY_POSTFIX = "BaseSallary";
+public static WORK_EXPERIENCE_RATIO_POSTFIX = "WorkExperienceRatio";
+public static WORK_EXPERIENCE_MAX_RATIO_POSTFIX = "WorkExperienceMaxRatio";
+public static SUBORDINATE_RATIO_POSTFIX = "SubordinateRatio";
+
+public string GetConfigValueByName(string name) {
+	<...>
+}
+
+public float GetFloatCastedValueByName(string name) {
+	return float.Parse(GetConfigValueByName(name), CultureInfo.InvariantCulture.NumberFormat);
+}
+
+- PersonController
+
+public Person[] GetFirstLevelSubordinates(Person person) {
+	<...>
+}
+
+public Person[] GetAllSubordinates(Person person) {
+	<...>
+}
+
+public PersonGroup GetPersonGroupOnDate(Person person, DateTime onDate) {
+	<...>
+}
