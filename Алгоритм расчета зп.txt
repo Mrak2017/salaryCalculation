@@ -1,18 +1,27 @@
 - SallaryCalculator
 private ERROR_START_TEXT = "Ошибка при расчете заработной платы. ";
 
-private Dictionary<Person, float> calculationCache = null; 				// учитывать дату !!!!!!
+public float CalculateTotalSallary(DateTime onDate) {
+	Dictionary<Tuple<Person, DateTime>, float> calculationCache = new Dictionary<Tuple<Person, DateTime>, float>();
 
-public float CalculateSallary(Person person, DateTime onDate) {
-	calculationCache = new Dictionary<Person, float>();
-	float result = CalculateSallaryInternal(person, onDate);
-	calculationCache = null;
+	Person[] all = PersonController.GetAllPersons();
+	float singleSallary = 0;
+	foreach (var person in all) {
+		if (!calculationCache.TryGetValue(new Tuple<Person, DateTime>(person, onDate), singleSallary)) {
+				singleSallary = CalculateSallary(person, onDate);
+				calculationCache.Add(new Tuple<Person, DateTime>(person, onDate), singleSallary);
+		}
+		singleSallary = 0;
+	}
+
+	float result = 0;
+	foreach(KeyValuePair<Tuple<Person, DateTime>, float> entry in calculationCache) {
+		result += entry.Value;
+	}
 	return result;
 }
 
-private float CalculateSallaryInternal(Person person, DateTime onDate) {
-	findInCache();
-
+public float CalculateSallary(Person person, DateTime onDate) {
 	PersonGroup group = PersonController.GetPersonGroupOnDate(person, onDate);
 	float result = CalculateSallaryBasePart(group, onDate);
 
@@ -127,5 +136,9 @@ public Person[] GetAllSubordinates(Person person) {
 }
 
 public PersonGroup GetPersonGroupOnDate(Person person, DateTime onDate) {
+	<...>
+}
+
+public Person[] GetAllPersons() {
 	<...>
 }
