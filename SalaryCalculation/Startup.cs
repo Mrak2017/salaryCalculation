@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using SalaryCalculation.Models;
 
 namespace SalaryCalculation
 {
@@ -26,6 +28,9 @@ namespace SalaryCalculation
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddDbContext<SalaryCalculationDBContext>(options =>
+                  options.UseSqlite("Data Source=SalaryCalculation.db"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
