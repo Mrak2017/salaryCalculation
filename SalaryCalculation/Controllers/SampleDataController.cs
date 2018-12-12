@@ -14,6 +14,13 @@ namespace SalaryCalculation.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
+        private readonly Models.SalaryCalculationDBContext dbContext;
+
+        public SampleDataController(Models.SalaryCalculationDBContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
         [HttpGet("[action]")]
         public IEnumerable<WeatherForecast> WeatherForecasts()
         {
@@ -22,7 +29,8 @@ namespace SalaryCalculation.Controllers
             {
                 DateFormatted = DateTime.Now.AddDays(index).ToString("d"),
                 TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
+                Summary = Summaries[rng.Next(Summaries.Length)],
+                TestData = getTestData()
             });
         }
 
@@ -31,6 +39,7 @@ namespace SalaryCalculation.Controllers
             public string DateFormatted { get; set; }
             public int TemperatureC { get; set; }
             public string Summary { get; set; }
+            public string TestData { get; set; }
 
             public int TemperatureF
             {
@@ -40,5 +49,15 @@ namespace SalaryCalculation.Controllers
                 }
             }
         }
+
+        private string getTestData()
+        {
+            foreach (var person in this.dbContext.Person)
+            {
+                return person.Login;
+            }
+            return "error happened";
+        }
+
     }
 }
