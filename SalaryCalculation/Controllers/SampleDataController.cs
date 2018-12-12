@@ -52,11 +52,8 @@ namespace SalaryCalculation.Controllers
 
         private string getTestData()
         {
-            foreach (var person in this.dbContext.Person)
-            {
-                return person.Login;
-            }
-            return "error happened";
+            Models.Person person = this.dbContext.Persons.First();
+            return person != null ? person.Login : "error happened";
         }
 
     }

@@ -9,7 +9,7 @@
 - Работает, уволен (Active, boolean)
 
 Отношение сотрудника к группе (Person2Group)
-- Ccылка на сотрудника (Person, fk, 1 к 1)
+- Ccылка на сотрудника (Person, fk, 1 ко многим)
 - Группа (Group, enum (Employee/Manager/Salesman))
 - Дата начала действия (StartDate, date)
 - Дата окончания действия (EndDate, date)
