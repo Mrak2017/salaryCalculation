@@ -1,14 +1,12 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace SalaryCalculation.Models
 {
     public class SalaryCalculationDBContext : DbContext
     {
-        public SalaryCalculationDBContext (DbContextOptions<SalaryCalculationDBContext> options): base(options)
+        public SalaryCalculationDBContext(DbContextOptions<SalaryCalculationDBContext> options) : base(options)
         {
         }
 
@@ -16,30 +14,122 @@ namespace SalaryCalculation.Models
 
         public DbSet<Person2Group> Person2Groups { get; set; }
 
+        public DbSet<OrganizationStructureItem> OrganizationStructure { get; set; }
+
+        public DbSet<Configuration> Configs { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Person>()
+            this.InitPerson(modelBuilder);
+            this.InitPerson2Group(modelBuilder);
+            this.InitOrganizationStructureItem(modelBuilder);
+            this.InitConfigs(modelBuilder);
+        }
+
+        private void InitPerson(ModelBuilder builder)
+        {
+            /// Base fields
+            builder.Entity<Person>()
                 .Property(p => p.InsertDate)
                 .HasDefaultValueSql("date('now')");
 
-            modelBuilder.Entity<Person>()
+            builder.Entity<Person>()
                 .Property(p => p.UpdateDate)
                 .HasDefaultValueSql("date('now')");
 
-            modelBuilder.Entity<Person>()
+            builder.Entity<Person>()
                 .Property(p => p.Active)
                 .HasDefaultValue(true);
 
-            modelBuilder.Entity<Person2Group>()
-                .Property(p => p.InsertDate)
-                .HasDefaultValueSql("date('now')");
+            /// Person 2 OrganizationStructureItem
 
-            modelBuilder.Entity<Person2Group>()
+            builder.Entity<Person>()
+                .HasOne(p => p.OrgStructure)
+                .WithOne(o => o.Person)
+                .HasForeignKey<OrganizationStructureItem>(o => o.PersonId);
+        }
+
+        private void InitPerson2Group(ModelBuilder builder)
+        {
+            /// Base fields
+            builder.Entity<Person2Group>()
+               .Property(p => p.InsertDate)
+               .HasDefaultValueSql("date('now')");
+
+            builder.Entity<Person2Group>()
                 .Property(p => p.UpdateDate)
                 .HasDefaultValueSql("date('now')");
 
-            modelBuilder.Entity<Person2Group>()
+            builder.Entity<Person2Group>()
                 .Property(p => p.Active)
+                .HasDefaultValue(true);
+
+            /// GroupType Enum as string
+            var converter = new EnumToStringConverter<GroupType>();
+
+            builder.Entity<Person2Group>()
+                .Property(p => p.GroupType)
+                .HasConversion(converter);
+
+            /// Person 2 Person2Group
+            builder.Entity<Person2Group>()
+                .HasOne(g => g.Person)
+                .WithMany(p => p.Groups)
+                .IsRequired();
+
+            /* TODO разобраться почему не работает
+             * builder.Entity<Person2Group>()
+                 .HasIndex(g => new { g.Person, g.Active })
+                 .IsUnique();*/
+        }
+        private void InitOrganizationStructureItem(ModelBuilder builder)
+        {
+            /// Base fields
+            builder.Entity<OrganizationStructureItem>()
+                .Property(e => e.InsertDate)
+                .HasDefaultValueSql("date('now')");
+
+            builder.Entity<OrganizationStructureItem>()
+                .Property(e => e.UpdateDate)
+                .HasDefaultValueSql("date('now')");
+
+            builder.Entity<OrganizationStructureItem>()
+                .Property(e => e.Active)
+                .HasDefaultValue(true);
+
+            /// MaterializedPath
+            ValueConverter splitStringConverter = new ValueConverter<ICollection<string>, string>(
+                    v => string.Join(";", v),
+                    v => v.Split(new[] { ';' })
+                );
+
+            builder.Entity<OrganizationStructureItem>()
+                .Property(nameof(OrganizationStructureItem.MaterializedPath))
+                .HasConversion(splitStringConverter);
+
+            /// OrganizationStructureItem hierarchy
+            builder.Entity<OrganizationStructureItem>(entity =>
+            {
+                entity
+                    .HasMany(e => e.Children)
+                    .WithOne(e => e.Parent)
+                    .HasForeignKey(e => e.ParentId);
+            });
+        }
+
+        public void InitConfigs(ModelBuilder builder)
+        {
+            /// Base fields
+            builder.Entity<Configuration>()
+                .Property(e => e.InsertDate)
+                .HasDefaultValueSql("date('now')");
+
+            builder.Entity<Configuration>()
+                .Property(e => e.UpdateDate)
+                .HasDefaultValueSql("date('now')");
+
+            builder.Entity<Configuration>()
+                .Property(e => e.Active)
                 .HasDefaultValue(true);
         }
     }

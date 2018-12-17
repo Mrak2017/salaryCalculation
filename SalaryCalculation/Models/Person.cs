@@ -34,5 +34,11 @@ namespace SalaryCalculation.Models
 
         /*Дата увольнения*/
         public Nullable<DateTime> EndDate { get; set; }
+
+        /*Список групп в которые когда либо входил сотрудник*/
+        public List<Person2Group> Groups { get; set; }
+
+        /*Ссылка на положение в структуре компании*/
+        public OrganizationStructureItem OrgStructure { get; set; }
     }
 }

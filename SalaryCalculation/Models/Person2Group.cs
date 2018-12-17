@@ -1,23 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SalaryCalculation.Models
 {
-    enum Group
+    /*Тип группы*/
+    public enum GroupType
     {
         Employee,
         Manager,
         Salesman
     }
 
+    /* Отношение сотрудника к группе */
     public class Person2Group : BaseEntity
     {
         /*Сотрудник*/
-        [Required]
         public Person Person { get; set; }
 
+        /*Группа*/
+        [Required]
+        public GroupType GroupType { get; set; }
+
+        /*Дата начала нахождения в группе*/
+        [Required]
+        public DateTime PeriodStart { get; set; }
+
+        /*Дата окончания нахождения в группе*/
+        public Nullable<DateTime> PeriodEnd { get; set; }
     }
 }
