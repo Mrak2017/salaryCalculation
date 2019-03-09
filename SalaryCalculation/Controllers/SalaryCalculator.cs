@@ -19,12 +19,12 @@ namespace SalaryCalculation.Controllers
             this.configurationController = new ConfigurationController(dbContext);
         }
 
-        public float CalculateTotalSallary(DateTime onDate)
+        public decimal CalculateTotalSallary(DateTime onDate)
         {
-            Dictionary<Tuple<Person, DateTime>, float> calculationCache = new Dictionary<Tuple<Person, DateTime>, float>();
+            Dictionary<Tuple<Person, DateTime>, decimal> calculationCache = new Dictionary<Tuple<Person, DateTime>, decimal>();
 
             Person[] all = this.personController.GetAllPersons();
-            float singleSallary = 0;
+            decimal singleSallary = 0;
             foreach (var person in all)
             {
                 if (!calculationCache.TryGetValue(new Tuple<Person, DateTime>(person, onDate), out singleSallary))
@@ -35,18 +35,18 @@ namespace SalaryCalculation.Controllers
                 singleSallary = 0;
             }
 
-            float result = 0;
-            foreach (KeyValuePair<Tuple<Person, DateTime>, float> entry in calculationCache)
+            decimal result = 0;
+            foreach (KeyValuePair<Tuple<Person, DateTime>, decimal> entry in calculationCache)
             {
                 result += entry.Value;
             }
             return result;
         }
 
-        public float CalculateSallary(Person person, DateTime onDate)
+        public decimal CalculateSallary(Person person, DateTime onDate)
         {
             GroupType group = this.personController.GetPersonGroupOnDate(person, onDate);
-            float result = CalculateSallaryBasePart(group, onDate, person.StartDate);
+            decimal result = CalculateSallaryBasePart(group, onDate, person);
 
             switch (group)
             {
@@ -68,7 +68,7 @@ namespace SalaryCalculation.Controllers
             return CheckResult(result, person);
         }
 
-        private float CheckResult(float value, Person person)
+        private decimal CheckResult(decimal value, Person person)
         {
             if (value <= 0)
             {
@@ -79,14 +79,14 @@ namespace SalaryCalculation.Controllers
             return value;
         }
 
-        private float CalculateSallaryBasePart(GroupType group, DateTime onDate, DateTime startDate)
+        private decimal CalculateSallaryBasePart(GroupType group, DateTime onDate, Person person)
         {
-            int workedYears = DateUtils.GetFullYearsBetweenDates(startDate, onDate);
-            float baseSallary = GetBaseSallaryByGroup(group);
-            float workExpRatio = GetWorkExperienceRatioByGroup(group);
-            float workExpMaxRatio = GetWorkExperienceMaxRatioByGroup(group);
+            int workedYears = DateUtils.GetFullYearsBetweenDates(person.StartDate, onDate);
+            decimal baseSallary = person.BaseSallaryPart.GetValueOrDefault(GetBaseSallaryByGroup(group));
+            decimal workExpRatio = GetWorkExperienceRatioByGroup(group);
+            decimal workExpMaxRatio = GetWorkExperienceMaxRatioByGroup(group);
 
-            float workExpResultRatio = workExpRatio * workedYears;
+            decimal workExpResultRatio = workExpRatio * workedYears;
             if (workExpResultRatio > workExpMaxRatio)
             {
                 workExpResultRatio = workExpMaxRatio;
@@ -94,11 +94,11 @@ namespace SalaryCalculation.Controllers
             return baseSallary + (workExpResultRatio * baseSallary);
         }
 
-        private float CalculateManagerSallaryAddition(Person person, GroupType group, DateTime onDate)
+        private decimal CalculateManagerSallaryAddition(Person person, GroupType group, DateTime onDate)
         {
-            float subordinateRatio = GetSubordinateRatioByGroup(group);
+            decimal subordinateRatio = GetSubordinateRatioByGroup(group);
             Person[] subordinates = this.personController.GetFirstLevelSubordinates(person);
-            float result = 0;
+            decimal result = 0;
             foreach (var sub in subordinates)
             {
                 result += CalculateSallary(sub, onDate);
@@ -106,11 +106,11 @@ namespace SalaryCalculation.Controllers
             return result * subordinateRatio;
         }
 
-        private float CalculateSalesmanSallaryAddition(Person person, GroupType group, DateTime onDate)
+        private decimal CalculateSalesmanSallaryAddition(Person person, GroupType group, DateTime onDate)
         {
-            float subordinateRatio = GetSubordinateRatioByGroup(group);
+            decimal subordinateRatio = GetSubordinateRatioByGroup(group);
             Person[] subordinates = this.personController.GetAllSubordinates(person);
-            float result = 0;
+            decimal result = 0;
             foreach (var sub in subordinates)
             {
                 result += CalculateSallary(sub, onDate);
@@ -118,29 +118,28 @@ namespace SalaryCalculation.Controllers
             return result * subordinateRatio;
         }
 
-        private float GetBaseSallaryByGroup(GroupType group)
+        private decimal GetBaseSallaryByGroup(GroupType group)
         {
-            // предусмотреть дефолтное значение
             return this.configurationController
-                .GetFloatCastedValueByName(group.ToString() + ConfigurationController.BASE_SALLARY_POSTFIX);
+                .GetDecimalCastedValueByName(group.ToString() + ConfigurationController.BASE_SALLARY_POSTFIX);
         }
 
-        private float GetWorkExperienceRatioByGroup(GroupType group)
+        private decimal GetWorkExperienceRatioByGroup(GroupType group)
         {
             return this.configurationController
-                .GetFloatCastedValueByName(group.ToString() + ConfigurationController.WORK_EXPERIENCE_RATIO_POSTFIX);
+                .GetDecimalCastedValueByName(group.ToString() + ConfigurationController.WORK_EXPERIENCE_RATIO_POSTFIX);
         }
 
-        private float GetWorkExperienceMaxRatioByGroup(GroupType group)
+        private decimal GetWorkExperienceMaxRatioByGroup(GroupType group)
         {
             return this.configurationController
-                .GetFloatCastedValueByName(group.ToString() + ConfigurationController.WORK_EXPERIENCE_MAX_RATIO_POSTFIX);
+                .GetDecimalCastedValueByName(group.ToString() + ConfigurationController.WORK_EXPERIENCE_MAX_RATIO_POSTFIX);
         }
 
-        private float GetSubordinateRatioByGroup(GroupType group)
+        private decimal GetSubordinateRatioByGroup(GroupType group)
         {
             return this.configurationController
-                .GetFloatCastedValueByName(group.ToString() + ConfigurationController.SUBORDINATE_RATIO_POSTFIX);
+                .GetDecimalCastedValueByName(group.ToString() + ConfigurationController.SUBORDINATE_RATIO_POSTFIX);
         }
     }
 }

@@ -30,6 +30,9 @@ namespace SalaryCalculation.Models
         [Required]
         public DateTime StartDate { get; set; }
 
+        /*Базовая ставка зарплаты*/
+        public Nullable<decimal> BaseSallaryPart { get; set; }
+
         /*Дата увольнения*/
         public Nullable<DateTime> EndDate { get; set; }
 

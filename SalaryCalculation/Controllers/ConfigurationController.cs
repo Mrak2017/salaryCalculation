@@ -29,9 +29,9 @@ namespace SalaryCalculation.Controllers
                 .Single();
         }
 
-        public float GetFloatCastedValueByName(string name)
+        public decimal GetDecimalCastedValueByName(string name)
         {
-            return float.Parse(GetConfigValueByName(name), CultureInfo.InvariantCulture.NumberFormat);
+            return decimal.Parse(GetConfigValueByName(name), CultureInfo.InvariantCulture.NumberFormat);
         }
     }
 }
