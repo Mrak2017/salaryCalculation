@@ -4,3 +4,5 @@
 /SalaryCalculation/ClientApp/ClientApp.iml
 /SalaryCalculation/Migrations
 /SalaryCalculation/SalaryCalculation.db
+/SalaryCalculation/ClientApp/.idea
+/SalaryCalculation/ClientApp/node_modules

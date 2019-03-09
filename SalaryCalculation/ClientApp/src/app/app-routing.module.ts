@@ -1,32 +1,10 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from "@angular/router";
-import { CounterComponent } from "./counter/counter.component";
-import { HomeComponent } from "./home/home.component";
-import { FetchDataComponent } from "./fetch-data/fetch-data.component";
-import { PersonsJournalComponent } from "./person/persons-journal/persons-journal.component";
+import { Routes, RouterModule } from '@angular/router';
 
-const routes: Routes = [
-  {
-    path: '',
-    component: HomeComponent,
-    pathMatch: 'full',
-  }, {
-    path: 'counter',
-    component: CounterComponent,
-  }, {
-    path: 'fetch-data',
-    component: FetchDataComponent,
-  }, {
-    path: 'persons',
-    component: PersonsJournalComponent,
-  },
-];
+const routes: Routes = [];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes),
-  ],
-  exports: [RouterModule],
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule { }
