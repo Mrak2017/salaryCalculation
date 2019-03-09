@@ -1,3 +1,6 @@
 /.vs/
 /SalaryCalculation/bin
 /SalaryCalculation/obj
+/SalaryCalculation/ClientApp/ClientApp.iml
+/SalaryCalculation/Migrations
+/SalaryCalculation/SalaryCalculation.db

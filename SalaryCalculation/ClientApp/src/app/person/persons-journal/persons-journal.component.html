@@ -1,0 +1,24 @@
+<h3>Список сотрудников</h3>
+<p *ngIf="!(persons$ | async)"><em>Loading...</em></p>
+<button (click)="createPerson()">Создать</button>
+<table class='table' *ngIf="persons$ | async">
+  <thead>
+  <tr>
+    <th>ФИО</th>
+    <th>Дата устройства</th>
+    <th>Дата увольнения</th>
+    <th>Группа</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of persons$ | async">
+    <td>{{ item.fullName() }}</td>
+    <td>{{ item.startDate | date }}</td>
+    <td>{{ item.endDate | date}}</td>
+    <td>{{ item.currentGroup.name }}</td>
+    <td (click)="deletePerson(item.id)" >Удалить</td>
+  </tr>
+  </tbody>
+</table>
+
+

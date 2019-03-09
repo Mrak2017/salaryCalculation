@@ -35,7 +35,7 @@ namespace SalaryCalculation.Controllers
                 .Where(g => 
                     g.Person == person 
                     && g.PeriodStart <= onDate
-                    && g.PeriodEnd >= onDate
+                    && (g.PeriodEnd == null || g.PeriodEnd >= onDate)
                     && g.Active == true
                 )
                 .OrderByDescending(g => g.ID)
