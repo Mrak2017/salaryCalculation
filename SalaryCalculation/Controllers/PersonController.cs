@@ -48,6 +48,16 @@ namespace SalaryCalculation.Controllers
             return this.dbContext.Persons.ToArray();
         }
 
+        public void AddPerson(Person person, Person2Group p2g)
+        {
+            this.dbContext.Persons.Add(person);
+            this.dbContext.SaveChanges();
+
+            p2g.Person = person;
+            this.dbContext.Person2Groups.Add(p2g);
+            this.dbContext.SaveChanges();
+        }
+
         public void RecalculateMaterializedPathOrgStructure()
         {
             /// https://github.com/aspnet/EntityFrameworkCore/issues/3241#issuecomment-411928305

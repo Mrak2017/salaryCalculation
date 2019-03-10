@@ -31,11 +31,11 @@ namespace SalaryCalculation.Models
             /// Base fields
             builder.Entity<Person>()
                 .Property(p => p.InsertDate)
-                .HasDefaultValueSql("date('now')");
+                .HasDefaultValueSql("datetime('now')");
 
             builder.Entity<Person>()
                 .Property(p => p.UpdateDate)
-                .HasDefaultValueSql("date('now')");
+                .HasDefaultValueSql("datetime('now')");
 
             builder.Entity<Person>()
                 .Property(p => p.Active)
@@ -54,11 +54,11 @@ namespace SalaryCalculation.Models
             /// Base fields
             builder.Entity<Person2Group>()
                .Property(p => p.InsertDate)
-               .HasDefaultValueSql("date('now')");
+               .HasDefaultValueSql("datetime('now')");
 
             builder.Entity<Person2Group>()
                 .Property(p => p.UpdateDate)
-                .HasDefaultValueSql("date('now')");
+                .HasDefaultValueSql("datetime('now')");
 
             builder.Entity<Person2Group>()
                 .Property(p => p.Active)
@@ -87,11 +87,11 @@ namespace SalaryCalculation.Models
             /// Base fields
             builder.Entity<OrganizationStructureItem>()
                 .Property(e => e.InsertDate)
-                .HasDefaultValueSql("date('now')");
+                .HasDefaultValueSql("datetime('now')");
 
             builder.Entity<OrganizationStructureItem>()
                 .Property(e => e.UpdateDate)
-                .HasDefaultValueSql("date('now')");
+                .HasDefaultValueSql("datetime('now')");
 
             builder.Entity<OrganizationStructureItem>()
                 .Property(e => e.Active)
@@ -122,11 +122,11 @@ namespace SalaryCalculation.Models
             /// Base fields
             builder.Entity<Configuration>()
                 .Property(e => e.InsertDate)
-                .HasDefaultValueSql("date('now')");
+                .HasDefaultValueSql("datetime('now')");
 
             builder.Entity<Configuration>()
                 .Property(e => e.UpdateDate)
-                .HasDefaultValueSql("date('now')");
+                .HasDefaultValueSql("datetime('now')");
 
             builder.Entity<Configuration>()
                 .Property(e => e.Active)

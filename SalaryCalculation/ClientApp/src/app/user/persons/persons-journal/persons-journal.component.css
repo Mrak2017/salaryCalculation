@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+table {
+  width: 100%;
+}
+
+.add-button {
+  position: absolute;
+  align-self: flex-end;
+  bottom: 30px;
+  right: 30px;
+}
