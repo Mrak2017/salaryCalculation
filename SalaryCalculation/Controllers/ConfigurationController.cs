@@ -9,7 +9,7 @@ namespace SalaryCalculation.Controllers
 {
     public class ConfigurationController
     {
-        public const string BASE_SALLARY_POSTFIX = "BaseSallary";
+        public const string BASE_SALARY_POSTFIX = "BaseSalary";
         public const string WORK_EXPERIENCE_RATIO_POSTFIX = "WorkExperienceRatio";
         public const string WORK_EXPERIENCE_MAX_RATIO_POSTFIX = "WorkExperienceMaxRatio";
         public const string SUBORDINATE_RATIO_POSTFIX = "SubordinateRatio";

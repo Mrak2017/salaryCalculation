@@ -19,20 +19,20 @@ namespace SalaryCalculation.Controllers
             this.configurationController = new ConfigurationController(dbContext);
         }
 
-        public decimal CalculateTotalSallary(DateTime onDate)
+        public decimal CalculateTotalSalary(DateTime onDate)
         {
             Dictionary<Tuple<Person, DateTime>, decimal> calculationCache = new Dictionary<Tuple<Person, DateTime>, decimal>();
 
             Person[] all = this.personController.GetAllPersons();
-            decimal singleSallary = 0;
+            decimal singleSalary = 0;
             foreach (var person in all)
             {
-                if (!calculationCache.TryGetValue(new Tuple<Person, DateTime>(person, onDate), out singleSallary))
+                if (!calculationCache.TryGetValue(new Tuple<Person, DateTime>(person, onDate), out singleSalary))
                 {
-                    singleSallary = CalculateSallary(person, onDate);
-                    calculationCache.Add(new Tuple<Person, DateTime>(person, onDate), singleSallary);
+                    singleSalary = CalculateSalary(person, onDate);
+                    calculationCache.Add(new Tuple<Person, DateTime>(person, onDate), singleSalary);
                 }
-                singleSallary = 0;
+                singleSalary = 0;
             }
 
             decimal result = 0;
@@ -43,10 +43,10 @@ namespace SalaryCalculation.Controllers
             return result;
         }
 
-        public decimal CalculateSallary(Person person, DateTime onDate)
+        public decimal CalculateSalary(Person person, DateTime onDate)
         {
             GroupType group = this.personController.GetPersonGroupOnDate(person, onDate);
-            decimal result = CalculateSallaryBasePart(group, onDate, person);
+            decimal result = CalculateSalaryBasePart(group, onDate, person);
 
             switch (group)
             {
@@ -54,11 +54,11 @@ namespace SalaryCalculation.Controllers
                     break;
 
                 case GroupType.Manager:
-                    result += CalculateManagerSallaryAddition(person, group, onDate);
+                    result += CalculateManagerSalaryAddition(person, group, onDate);
                     break;
 
                 case GroupType.Salesman:
-                    result += CalculateSalesmanSallaryAddition(person, group, onDate);
+                    result += CalculateSalesmanSalaryAddition(person, group, onDate);
                     break;
 
                 default:
@@ -79,10 +79,10 @@ namespace SalaryCalculation.Controllers
             return value;
         }
 
-        private decimal CalculateSallaryBasePart(GroupType group, DateTime onDate, Person person)
+        private decimal CalculateSalaryBasePart(GroupType group, DateTime onDate, Person person)
         {
             int workedYears = DateUtils.GetFullYearsBetweenDates(person.StartDate, onDate);
-            decimal baseSallary = person.BaseSallaryPart.GetValueOrDefault(GetBaseSallaryByGroup(group));
+            decimal baseSalary = person.BaseSalaryPart.GetValueOrDefault(GetBaseSalaryByGroup(group));
             decimal workExpRatio = GetWorkExperienceRatioByGroup(group);
             decimal workExpMaxRatio = GetWorkExperienceMaxRatioByGroup(group);
 
@@ -91,37 +91,37 @@ namespace SalaryCalculation.Controllers
             {
                 workExpResultRatio = workExpMaxRatio;
             }
-            return baseSallary + (workExpResultRatio * baseSallary);
+            return baseSalary + (workExpResultRatio * baseSalary);
         }
 
-        private decimal CalculateManagerSallaryAddition(Person person, GroupType group, DateTime onDate)
+        private decimal CalculateManagerSalaryAddition(Person person, GroupType group, DateTime onDate)
         {
             decimal subordinateRatio = GetSubordinateRatioByGroup(group);
             Person[] subordinates = this.personController.GetFirstLevelSubordinates(person);
             decimal result = 0;
             foreach (var sub in subordinates)
             {
-                result += CalculateSallary(sub, onDate);
+                result += CalculateSalary(sub, onDate);
             }
             return result * subordinateRatio;
         }
 
-        private decimal CalculateSalesmanSallaryAddition(Person person, GroupType group, DateTime onDate)
+        private decimal CalculateSalesmanSalaryAddition(Person person, GroupType group, DateTime onDate)
         {
             decimal subordinateRatio = GetSubordinateRatioByGroup(group);
             Person[] subordinates = this.personController.GetAllSubordinates(person);
             decimal result = 0;
             foreach (var sub in subordinates)
             {
-                result += CalculateSallary(sub, onDate);
+                result += CalculateSalary(sub, onDate);
             }
             return result * subordinateRatio;
         }
 
-        private decimal GetBaseSallaryByGroup(GroupType group)
+        private decimal GetBaseSalaryByGroup(GroupType group)
         {
             return this.configurationController
-                .GetDecimalCastedValueByName(group.ToString() + ConfigurationController.BASE_SALLARY_POSTFIX);
+                .GetDecimalCastedValueByName(group.ToString() + ConfigurationController.BASE_SALARY_POSTFIX);
         }
 
         private decimal GetWorkExperienceRatioByGroup(GroupType group)

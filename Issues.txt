@@ -1,0 +1,2 @@
+1) класс SalaryCalculationDBContext, метод InitPerson2Group
+не получается сгенерировать уникальный индекс на 2 поля одновременно - Person + Active
