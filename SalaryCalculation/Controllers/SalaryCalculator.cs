@@ -126,25 +126,25 @@ namespace SalaryCalculation.Controllers
         private decimal GetBaseSalaryByGroup(GroupType group)
         {
             return this.configurationController
-                .GetDecimalCastedValueByName(group.ToString() + ConfigurationController.BASE_SALARY_POSTFIX);
+                .GetDecimalCastedValueByCode(group.ToString() + ConfigurationController.BASE_SALARY_POSTFIX);
         }
 
         private decimal GetWorkExperienceRatioByGroup(GroupType group)
         {
             return this.configurationController
-                .GetDecimalCastedValueByName(group.ToString() + ConfigurationController.WORK_EXPERIENCE_RATIO_POSTFIX);
+                .GetDecimalCastedValueByCode(group.ToString() + ConfigurationController.WORK_EXPERIENCE_RATIO_POSTFIX);
         }
 
         private decimal GetWorkExperienceMaxRatioByGroup(GroupType group)
         {
             return this.configurationController
-                .GetDecimalCastedValueByName(group.ToString() + ConfigurationController.WORK_EXPERIENCE_MAX_RATIO_POSTFIX);
+                .GetDecimalCastedValueByCode(group.ToString() + ConfigurationController.WORK_EXPERIENCE_MAX_RATIO_POSTFIX);
         }
 
         private decimal GetSubordinateRatioByGroup(GroupType group)
         {
             return this.configurationController
-                .GetDecimalCastedValueByName(group.ToString() + ConfigurationController.SUBORDINATE_RATIO_POSTFIX);
+                .GetDecimalCastedValueByCode(group.ToString() + ConfigurationController.SUBORDINATE_RATIO_POSTFIX);
         }
     }
 }

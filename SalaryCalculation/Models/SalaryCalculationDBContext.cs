@@ -136,6 +136,11 @@ namespace SalaryCalculation.Models
             builder.Entity<Configuration>()
                 .Property(e => e.Active)
                 .HasDefaultValue(true);
+
+            /// Indexes
+            builder.Entity<Configuration>()
+                .HasIndex(e => e.Code)
+                .IsUnique();
         }
     }
 }

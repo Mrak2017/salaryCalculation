@@ -21,17 +21,23 @@ namespace SalaryCalculation.Controllers
             this.dbContext = dbContext;
         }
 
-        public string GetConfigValueByName(string name)
+        private string GetConfigValueByCode(string code)
         {
-            return this.dbContext.Configs
-                .Where(c => c.Name.Equals(name))
-                .Select(c => c.Value)
-                .Single();
+            Configuration config = this.dbContext.Configs
+                .Where(c => c.Code.Equals(code))
+                .SingleOrDefault();
+
+            if (config == null)
+            {
+                throw new Exception("Не удалось найти настройку с кодом '" + code + "'.");
+            }
+
+            return config.Value;
         }
 
-        public decimal GetDecimalCastedValueByName(string name)
+        public decimal GetDecimalCastedValueByCode(string code)
         {
-            return decimal.Parse(GetConfigValueByName(name), CultureInfo.InvariantCulture.NumberFormat);
+            return decimal.Parse(GetConfigValueByCode(code), CultureInfo.InvariantCulture.NumberFormat);
         }
     }
 }

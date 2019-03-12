@@ -9,12 +9,15 @@ namespace SalaryCalculation.Models
     /*Системные настройки*/
     public class Configuration : BaseEntity
     {
-        /*Название*/
+        /*Код (уникальный)*/
         [Required]
-        public string Name { get; set; }
+        public string Code { get; set; }
 
         /*Значение*/
         [Required]
         public string Value { get; set; }
+
+        /*Описание*/
+        public string Decription { get; set; }
     }
 }
