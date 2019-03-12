@@ -1,8 +1,13 @@
-<table mat-table [dataSource]="persons | async" class="mat-elevation-z8">
+<table mat-table [dataSource]="persons$ | async" class="mat-elevation-z8">
 
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef> № </th>
     <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="login">
+    <th mat-header-cell *matHeaderCellDef> Логин </th>
+    <td mat-cell *matCellDef="let element"> {{element.login}} </td>
   </ng-container>
 
   <ng-container matColumnDef="fullName">
@@ -12,12 +17,17 @@
 
   <ng-container matColumnDef="startDate">
     <th mat-header-cell *matHeaderCellDef> Дата трудоустройства </th>
-    <td mat-cell *matCellDef="let element"> {{element.startDate | date}} </td>
+    <td mat-cell *matCellDef="let element"> {{element.startDate | date: "dd.MM.yyyy"}} </td>
   </ng-container>
 
   <ng-container matColumnDef="currentGroup">
     <th mat-header-cell *matHeaderCellDef> Текущая должность </th>
-    <td mat-cell *matCellDef="let element"> {{element.currentGroup.name}} </td>
+    <td mat-cell *matCellDef="let element"> {{element.currentGroup?.name}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="baseSalaryPart">
+    <th mat-header-cell *matHeaderCellDef> Базовая ставка з/п </th>
+    <td mat-cell *matCellDef="let element"> {{element.baseSalaryPart}} </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

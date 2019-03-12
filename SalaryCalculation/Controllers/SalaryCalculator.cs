@@ -45,7 +45,12 @@ namespace SalaryCalculation.Controllers
 
         public decimal CalculateSalary(Person person, DateTime onDate)
         {
-            GroupType group = this.personController.GetPersonGroupOnDate(person, onDate);
+            GroupType? currentGroup = this.personController.GetPersonGroupOnDate(person, onDate);
+            if (currentGroup == null)
+            {
+                return 0;
+            }
+            GroupType group = currentGroup.GetValueOrDefault();
             decimal result = CalculateSalaryBasePart(group, onDate, person);
 
             switch (group)

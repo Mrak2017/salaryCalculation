@@ -25,7 +25,7 @@ namespace SalaryCalculation.Controllers
 
         private PersonJournalDTO PreparePersonDTO(Person person)
         {
-            GroupType group = personController.GetPersonGroupOnDate(person, DateTime.Today);
+            GroupType? group = personController.GetPersonGroupOnDate(person, DateTime.Today);
             return new PersonJournalDTO(person, group);
         }
 

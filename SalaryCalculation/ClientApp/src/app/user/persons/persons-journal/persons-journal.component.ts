@@ -10,14 +10,22 @@ import { PersonsMainService } from "../persons-main.service";
 })
 export class PersonsJournalComponent implements OnInit {
 
-  displayedColumns: string[] = ['id', 'fullName', 'startDate', 'currentGroup'];
-  persons: Observable<Person[]>;
+  displayedColumns: (keyof Person)[] = [
+    'id',
+    'login',
+    'fullName',
+    'startDate',
+    'currentGroup',
+    'baseSalaryPart'];
+
+  persons$: Observable<Person[]>;
 
   constructor(private service: PersonsMainService) {
   }
 
   ngOnInit() {
-    this.persons = this.service.getAllPersons();
+    this.persons$ = this.service.allPersons$;
+    this.service.refreshAllPersons();
   }
 
   addPerson() {

@@ -1,5 +1,5 @@
 export class CheckUtils {
-  static IsExists(value: any): boolean {
+  static isExists(value: any): boolean {
     return (value !== null) && (value !== undefined) && (value !== '');
   }
 }

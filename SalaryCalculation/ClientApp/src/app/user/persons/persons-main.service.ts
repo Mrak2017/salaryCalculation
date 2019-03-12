@@ -1,26 +1,35 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs/index";
+import { Observable, ReplaySubject } from "rxjs/index";
 import { map } from "rxjs/internal/operators";
 import { Person } from "./models/person.model";
 import { MatDialog } from "@angular/material";
 import { AddPersonDialogComponent } from "./add-person-dialog/add-person-dialog.component";
+import { Subscriber } from "../../shared/subscriber";
 
 @Injectable()
-export class PersonsMainService {
+export class PersonsMainService extends Subscriber implements OnInit {
+
+  private allPersonsSubject$ = new ReplaySubject<Person[]>(1);
+  allPersons$: Observable<Person[]> = this.allPersonsSubject$.asObservable();
 
   constructor(private http: HttpClient,
               @Inject('BASE_URL') private baseUrl: string,
               private dialog: MatDialog) {
+    super();
   }
 
-  private restUrl(): string {
-    return this.baseUrl + 'api/persons/';
+  ngOnInit(): void {
+
   }
 
-  getAllPersons(): Observable<Person[]> {
-    return this.http.get<Person[]>(this.restUrl() + 'AllPersons')
-        .pipe(map(data => data.map(value => new Person(value))));
+  refreshAllPersons() {
+    const subscribed = this.http.get<Person[]>(this.restUrl() + 'AllPersons')
+        .pipe(
+            map(data => data.map(value => new Person(value))),
+        ).subscribe(value => this.allPersonsSubject$.next(value));
+
+    this.subscribed(subscribed);
   }
 
   deletePerson(id: number): void {
@@ -30,10 +39,10 @@ export class PersonsMainService {
   addPerson() {
     const dialogRef = this.dialog.open(AddPersonDialogComponent, {
       width: '400px',
-      disableClose: true
+      disableClose: true,
     });
 
-    dialogRef.afterClosed().subscribe((result: Person)=> {
+    dialogRef.afterClosed().subscribe((result: Person) => {
       let dto = {
         login: result.login,
         password: result.password,
@@ -45,9 +54,12 @@ export class PersonsMainService {
         baseSalaryPart: result.baseSalaryPart,
       };
       this.http.post(this.restUrl() + 'AddPerson', dto).subscribe(
-          data => console.log("OK "+data),
-          error => console.log("Error "+error)
+          () => this.refreshAllPersons(),
       )
     });
+  }
+
+  private restUrl(): string {
+    return this.baseUrl + 'api/persons/';
   }
 }

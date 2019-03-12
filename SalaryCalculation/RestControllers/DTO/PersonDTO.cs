@@ -19,11 +19,11 @@ namespace SalaryCalculation.RestControllers.DTO
 
         public DateTime StartDate { get; set; }
 
-        public Nullable<DateTime> EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         public string CurrentGroup { get; set; }
 
-        public Nullable<decimal> BaseSalaryPart { get; set; }
+        public decimal? BaseSalaryPart { get; set; }
 
         public PersonDTO()
         {

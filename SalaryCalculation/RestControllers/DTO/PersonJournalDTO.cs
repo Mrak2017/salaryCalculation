@@ -7,6 +7,8 @@ namespace SalaryCalculation.RestControllers.DTO
     {
         public int Id { get; set; }
 
+        public string Login { get; set; }
+
         public string FirstName { get; set; }
 
         public string MiddleName { get; set; }
@@ -15,19 +17,26 @@ namespace SalaryCalculation.RestControllers.DTO
 
         public DateTime StartDate { get; set; }
 
-        public Nullable<DateTime> EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         public string CurrentGroup { get; set; }
 
-        public PersonJournalDTO(Person person, GroupType group)
+        public decimal? BaseSalaryPart { get; set; }
+
+        public PersonJournalDTO(Person person, GroupType? group)
         {
             this.Id = person.ID;
+            this.Login = person.Login;
             this.FirstName = person.FirstName;
             this.MiddleName = person.MiddleName;
             this.LastName = person.LastName;
             this.StartDate = person.StartDate;
             this.EndDate = person.EndDate;
-            this.CurrentGroup = group.ToString();
+            this.BaseSalaryPart = person.BaseSalaryPart;
+            if (group != null)
+            {
+                this.CurrentGroup = group.ToString();
+            }
         }
     }
 }

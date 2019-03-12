@@ -14,7 +14,7 @@ export class Person {
   public baseSalaryPart: number;
 
   constructor(data: any) {
-    if (CheckUtils.IsExists(data)) {
+    if (CheckUtils.isExists(data)) {
       this.id = data.id;
       this.login = data.login;
       this.password = data.password;
@@ -23,7 +23,9 @@ export class Person {
       this.lastName = data.lastName;
       this.startDate = new Date(data.startDate);
       this.endDate = data.endDate ? new Date(data.endDate) : null;
-      this.currentGroup = GroupTypeEnum.valueOf(data.currentGroup);
+      if (CheckUtils.isExists(data.currentGroup)) {
+        this.currentGroup = GroupTypeEnum.valueOf(data.currentGroup);
+      }
       this.baseSalaryPart = data.baseSalaryPart;
     }
   }
