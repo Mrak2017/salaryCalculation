@@ -47,6 +47,11 @@ namespace SalaryCalculation.Models
                 .HasOne(p => p.OrgStructure)
                 .WithOne(o => o.Person)
                 .HasForeignKey<OrganizationStructureItem>(o => o.PersonId);
+
+            /// Indexes
+            builder.Entity<Person>()
+                .HasIndex(p => p.Login)
+                .IsUnique();
         }
 
         private void InitPerson2Group(ModelBuilder builder)

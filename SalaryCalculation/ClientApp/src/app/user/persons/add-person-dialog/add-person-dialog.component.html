@@ -4,7 +4,7 @@
   <div>
 
     <mat-form-field>
-      <input matInput placeholder="Логин" formControlName="login">
+      <input matInput placeholder="Логин*" formControlName="login">
       <mat-error *ngIf="personForm.controls.login.hasError('required')">
         Это обязательное поле
       </mat-error>
@@ -14,7 +14,7 @@
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput placeholder="Пароль" formControlName="password">
+      <input matInput placeholder="Пароль*" formControlName="password">
       <mat-error *ngIf="personForm.controls.password.hasError('required')">
         Это обязательное поле
       </mat-error>
@@ -24,7 +24,7 @@
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput placeholder="Фамилия" formControlName="lastName">
+      <input matInput placeholder="Фамилия*" formControlName="lastName">
       <mat-error *ngIf="personForm.controls.lastName.hasError('required')">
         Это обязательное поле
       </mat-error>
@@ -34,7 +34,7 @@
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput placeholder="Имя" formControlName="firstName">
+      <input matInput placeholder="Имя*" formControlName="firstName">
       <mat-error *ngIf="personForm.controls.firstName.hasError('required')">
         Это обязательное поле
       </mat-error>
@@ -51,7 +51,7 @@
       <input matInput
              [matDatepicker]="picker"
              formControlName="startDate"
-             placeholder="Дата устройства на работу">
+             placeholder="Дата устройства на работу*">
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
       <mat-error *ngIf="personForm.controls.startDate.hasError('required')">
@@ -60,7 +60,7 @@
     </mat-form-field>
 
     <mat-form-field>
-      <mat-select placeholder="Группа сотрудника" formControlName="currentGroup">
+      <mat-select placeholder="Группа сотрудника*" formControlName="currentGroup">
         <mat-option *ngFor="let item of groupTypes" [value]="item">
           {{item.name}}
         </mat-option>

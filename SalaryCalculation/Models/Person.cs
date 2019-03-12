@@ -7,7 +7,7 @@ namespace SalaryCalculation.Models
     /* Сотрудник компании */
     public class Person : BaseEntity
     {
-        /*Логин*/
+        /*Логин (уникальный)*/
         [Required]
         public string Login { get; set; }
 

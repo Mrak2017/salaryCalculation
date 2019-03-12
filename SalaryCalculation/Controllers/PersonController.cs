@@ -55,6 +55,12 @@ namespace SalaryCalculation.Controllers
 
         public void AddPerson(Person person, Person2Group p2g)
         {
+            Person existed = FindPersonByLogin(person.Login);
+            if (existed != null)
+            {
+                throw new Exception("Сотрудник с логином '" + person.Login + "' уже существует.");
+            }
+
             this.dbContext.Persons.Add(person);
             this.dbContext.SaveChanges();
 
@@ -66,6 +72,13 @@ namespace SalaryCalculation.Controllers
         public void RecalculateMaterializedPathOrgStructure()
         {
             /// https://github.com/aspnet/EntityFrameworkCore/issues/3241#issuecomment-411928305
+        }
+
+        private Person FindPersonByLogin(String login)
+        {
+            return this.dbContext.Persons
+                .Where(p => p.Login == login)
+                .SingleOrDefault();
         }
     }
 }
