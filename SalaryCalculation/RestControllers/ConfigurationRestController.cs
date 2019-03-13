@@ -23,28 +23,11 @@ namespace SalaryCalculation.Controllers
                 .Select(e => new ConfigurationJournalDTO(e)).ToArray();
         }
 
-        /*
+        
         [HttpPost("[action]")]
-        public void AddPerson([FromBody] PersonDTO dto)
+        public void AddConfig([FromBody] ConfigurationDTO dto)
         {
-            Person person = new Person
-            {
-                Login = dto.Login,
-                Password = dto.Password,
-                FirstName = dto.FirstName,
-                MiddleName = dto.MiddleName,
-                LastName = dto.LastName,
-                StartDate = dto.StartDate,
-                BaseSalaryPart = dto.BaseSalaryPart
-            };
-
-            Person2Group p2g = new Person2Group
-            {
-                PeriodStart = dto.StartDate,
-                GroupType = (GroupType)Enum.Parse(typeof(GroupType), dto.CurrentGroup)
-            };
-
-            this.personController.AddPerson(person, p2g);
-        }*/
+            controller.AddSetting(dto.Code, dto.Value, dto.Description);
+        }
     }
 }

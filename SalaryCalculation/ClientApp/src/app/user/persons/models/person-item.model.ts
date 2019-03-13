@@ -1,13 +1,10 @@
 import { GroupTypeEnum } from "./group-type-enum";
 import { CheckUtils } from "../../../utils/check-utils";
 
-export class Person {
+export class PersonItem {
   public id: number;
   public login: string;
-  public password: string;
-  public firstName: string;
-  public middleName: string;
-  public lastName: string;
+  public fullName: string;
   public startDate: Date;
   public currentGroup: GroupTypeEnum;
   public baseSalaryPart: number;
@@ -16,10 +13,8 @@ export class Person {
     if (CheckUtils.isExists(data)) {
       this.id = data.id;
       this.login = data.login;
-      this.password = data.password;
-      this.firstName = data.firstName;
-      this.middleName = data.middleName;
-      this.lastName = data.lastName;
+      const middleName = data.middleName ? ' ' + data.middleName : '';
+      this.fullName = data.lastName + ' ' + data.firstName + middleName;
       this.startDate = new Date(data.startDate);
       if (CheckUtils.isExists(data.currentGroup)) {
         this.currentGroup = GroupTypeEnum.valueOf(data.currentGroup);
@@ -27,4 +22,5 @@ export class Person {
       this.baseSalaryPart = data.baseSalaryPart;
     }
   }
+
 }

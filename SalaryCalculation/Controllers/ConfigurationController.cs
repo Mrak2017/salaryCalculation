@@ -27,7 +27,7 @@ namespace SalaryCalculation.Controllers
 
         public decimal GetSettingDecimalOrDefault(string code, decimal defaultVal)
         {
-            Configuration conf = GetConfigValueByCode(code);
+            Configuration conf = GetConfigByCode(code);
             if (conf != null)
             {
                 return decimal.Parse(conf.Value, CultureInfo.InvariantCulture.NumberFormat);
@@ -38,7 +38,7 @@ namespace SalaryCalculation.Controllers
 
         public int GetSettingIntOrDefault(string code, int defaultVal)
         {
-            Configuration conf = GetConfigValueByCode(code);
+            Configuration conf = GetConfigByCode(code);
             if (conf != null)
             {
                 return int.Parse(conf.Value, CultureInfo.InvariantCulture.NumberFormat);
@@ -58,8 +58,26 @@ namespace SalaryCalculation.Controllers
 
             dbContext.AddOrModify(config, "Code");
         }
-        
-        private Configuration GetConfigValueByCode(string code)
+
+        public void AddSetting(string code, string value, string description = "")
+        {
+            if (GetConfigByCode(code) != null)
+            {
+                throw new Exception("Настройка с кодом '" + code + "' уже существует");
+            }
+
+            Configuration config = new Configuration
+            {
+                Code = code,
+                Value = value,
+                Decription = description
+            };
+
+            dbContext.Add(config);
+            dbContext.SaveChanges();
+        }
+
+        private Configuration GetConfigByCode(string code)
         {
             return dbContext.Configs
                 .Where(c => c.Code.Equals(code))

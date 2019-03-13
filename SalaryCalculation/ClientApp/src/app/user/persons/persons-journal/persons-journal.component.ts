@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Person } from "../models/person.model";
 import { Observable } from "rxjs/index";
 import { PersonsMainService } from "../persons-main.service";
+import { PersonItem } from "../models/person-item.model";
 
 @Component({
   selector: 'app-persons-journal',
@@ -10,7 +10,7 @@ import { PersonsMainService } from "../persons-main.service";
 })
 export class PersonsJournalComponent implements OnInit {
 
-  displayedColumns: (keyof Person)[] = [
+  displayedColumns: (keyof PersonItem)[] = [
     'id',
     'login',
     'fullName',
@@ -18,7 +18,7 @@ export class PersonsJournalComponent implements OnInit {
     'currentGroup',
     'baseSalaryPart'];
 
-  persons$: Observable<Person[]>;
+  persons$: Observable<PersonItem[]>;
 
   constructor(private service: PersonsMainService) {
   }

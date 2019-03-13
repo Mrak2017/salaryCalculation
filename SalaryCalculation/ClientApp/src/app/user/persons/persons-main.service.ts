@@ -2,15 +2,16 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { merge, Observable, Subject } from "rxjs/index";
 import { filter, map, shareReplay, switchMap, take } from "rxjs/internal/operators";
-import { Person } from "./models/person.model";
 import { MatDialog } from "@angular/material";
 import { AddPersonDialogComponent } from "./add-person-dialog/add-person-dialog.component";
 import { CheckUtils } from "../../utils/check-utils";
+import { PersonItem } from "./models/person-item.model";
+import { Person } from "./models/person.model";
 
 @Injectable()
 export class PersonsMainService {
 
-  public readonly allPersons$: Observable<Person[]>;
+  public readonly allPersons$: Observable<PersonItem[]>;
 
   private readonly refreshSubj: Subject<void> = new Subject<void>();
 
@@ -18,7 +19,7 @@ export class PersonsMainService {
               @Inject('BASE_URL') private baseUrl: string,
               private dialog: MatDialog) {
     const refreshed$ = this.refreshSubj.asObservable().pipe(
-        map(() => this.getAllPersons()),
+        switchMap(() => this.getAllPersons()),
     );
 
     const initial$ = this.getAllPersons();
@@ -30,10 +31,10 @@ export class PersonsMainService {
     this.refreshSubj.next();
   }
 
-  private getAllPersons(): Observable<Person[]> {
-    return this.http.get<Person[]>(this.restUrl() + 'AllPersons')
+  private getAllPersons(): Observable<PersonItem[]> {
+    return this.http.get<PersonItem[]>(this.restUrl() + 'AllPersons')
         .pipe(
-            map(data => data.map(value => new Person(value))),
+            map(data => data.map(value => new PersonItem(value))),
         )
   }
 
