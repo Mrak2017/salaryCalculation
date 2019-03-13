@@ -25,7 +25,6 @@ export class PersonsJournalComponent implements OnInit {
 
   ngOnInit() {
     this.persons$ = this.service.allPersons$;
-    this.service.refreshAllPersons();
   }
 
   addPerson() {

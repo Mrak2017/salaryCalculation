@@ -11,7 +11,7 @@ mat-action-list {
   width: 150px;
 }
 
-mat-action-list:hover {
+mat-action-list button:hover {
   background-color: rgba(0, 0, 0, 0.18);
 }
 

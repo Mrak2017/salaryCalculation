@@ -6,29 +6,24 @@ using System.Linq;
 
 namespace SalaryCalculation.Controllers
 {
-    [Route("api/persons")]
-    public class PersonRestController : Controller
+    [Route("api/configuration")]
+    public class ConfigurationRestController : Controller
     {
-        private readonly PersonController controller;
+        private readonly ConfigurationController controller;
 
-        public PersonRestController(SalaryCalculationDBContext dbContext)
+        public ConfigurationRestController(SalaryCalculationDBContext dbContext)
         {
-            controller = new PersonController(dbContext);
+            controller = new ConfigurationController(dbContext);
         }
 
         [HttpGet("[action]")]
-        public PersonJournalDTO[] AllPersons()
+        public ConfigurationJournalDTO[] AllConfigs()
         {
-            return this.controller.GetAllPersons()
-                .Select(person => this.PreparePersonDTO(person)).ToArray();
+            return controller.GetAllConfigs()
+                .Select(e => new ConfigurationJournalDTO(e)).ToArray();
         }
 
-        private PersonJournalDTO PreparePersonDTO(Person person)
-        {
-            GroupType? group = controller.GetPersonGroupOnDate(person, DateTime.Today);
-            return new PersonJournalDTO(person, group);
-        }
-
+        /*
         [HttpPost("[action]")]
         public void AddPerson([FromBody] PersonDTO dto)
         {
@@ -49,7 +44,7 @@ namespace SalaryCalculation.Controllers
                 GroupType = (GroupType)Enum.Parse(typeof(GroupType), dto.CurrentGroup)
             };
 
-            this.controller.AddPerson(person, p2g);
-        }
+            this.personController.AddPerson(person, p2g);
+        }*/
     }
 }

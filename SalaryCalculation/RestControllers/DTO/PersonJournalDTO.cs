@@ -25,17 +25,17 @@ namespace SalaryCalculation.RestControllers.DTO
 
         public PersonJournalDTO(Person person, GroupType? group)
         {
-            this.Id = person.ID;
-            this.Login = person.Login;
-            this.FirstName = person.FirstName;
-            this.MiddleName = person.MiddleName;
-            this.LastName = person.LastName;
-            this.StartDate = person.StartDate;
-            this.EndDate = person.EndDate;
-            this.BaseSalaryPart = person.BaseSalaryPart;
+            Id = person.ID;
+            Login = person.Login;
+            FirstName = person.FirstName;
+            MiddleName = person.MiddleName;
+            LastName = person.LastName;
+            StartDate = person.StartDate;
+            EndDate = person.EndDate;
+            BaseSalaryPart = person.BaseSalaryPart;
             if (group != null)
             {
-                this.CurrentGroup = group.ToString();
+                CurrentGroup = group.ToString();
             }
         }
     }

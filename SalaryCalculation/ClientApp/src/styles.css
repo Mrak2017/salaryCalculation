@@ -5,3 +5,20 @@
 body {
   height: 100vh;
 }
+
+.journal-form {
+  display: flex;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+.journal-form table {
+  width: 100%;
+}
+
+.journal-form-add-button {
+  position: absolute !important;
+  align-self: flex-end;
+  bottom: 30px;
+  right: 30px;
+}
