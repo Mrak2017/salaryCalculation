@@ -62,8 +62,7 @@ namespace SalaryCalculation.Controllers
             }
 
             this.dbContext.Persons.Add(person);
-            this.dbContext.SaveChanges();
-
+            
             p2g.Person = person;
             this.dbContext.Person2Groups.Add(p2g);
             this.dbContext.SaveChanges();
