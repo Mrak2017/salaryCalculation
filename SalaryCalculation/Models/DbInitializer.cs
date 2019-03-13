@@ -9,16 +9,16 @@ namespace SalaryCalculation.Models
 {
     public static class DbInitializer
     {
-        public static void Initialize(SalaryCalculationDBContext context, int version)
+        public static void Initialize(SalaryCalculationDBContext context, int currentVersion)
         {
             context.Database.EnsureCreated();
 
             ConfigurationController controller = new ConfigurationController(context);
-            var lastPassedVersion = controller.GetSettingIntOrDefault(ConfigurationController.LAST_DATA_REVISION_CODE, 0);
+            int lastPassedVersion = controller.GetSettingIntOrDefault(ConfigurationController.LAST_DATA_REVISION_CODE, 0);
             string mainClassNamespace = typeof(ReorganizationMain).Namespace;
-            foreach (int verionNumber in Enumerable.Range(lastPassedVersion, version))
+            for (int i = lastPassedVersion; i < currentVersion; i++)
             {
-                string className = mainClassNamespace + ".ToVersion" + version;
+                string className = mainClassNamespace + ".ToVersion" + currentVersion;
                 Type type = Type.GetType(className);
                 if (type != null)
                 {
@@ -30,7 +30,10 @@ namespace SalaryCalculation.Models
                     throw new Exception("Не удалось найти реорганизацию с именем: '" + className + "'");
                 }
             }
-            controller.AddOrUpdateSetting(ConfigurationController.LAST_DATA_REVISION_CODE, version.ToString());
+            if (lastPassedVersion != currentVersion)
+            {
+                controller.AddOrUpdateSetting(ConfigurationController.LAST_DATA_REVISION_CODE, currentVersion.ToString());
+            }
         }
     }
 }
