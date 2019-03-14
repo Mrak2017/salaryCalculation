@@ -7,6 +7,8 @@ namespace SalaryCalculation.Models.DataReorganizations
 {
     public abstract class ReorganizationMain
     {
+        public const string SubclassNamePrefix = "ToVersion";
+        
         protected readonly SalaryCalculationDBContext context;
 
         public ReorganizationMain(SalaryCalculationDBContext context)

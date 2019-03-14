@@ -16,7 +16,8 @@ export class PersonsJournalComponent implements OnInit {
     'fullName',
     'startDate',
     'currentGroup',
-    'baseSalaryPart'];
+    'baseSalaryPart',
+    'currentSalary'];
 
   persons$: Observable<PersonItem[]>;
 

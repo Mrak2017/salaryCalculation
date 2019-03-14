@@ -1,4 +1,5 @@
-﻿using SalaryCalculation.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using SalaryCalculation.Models;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -49,14 +50,25 @@ namespace SalaryCalculation.Controllers
 
         public void AddOrUpdateSetting(string code, string value, string description = "")
         {
-            Configuration config = new Configuration
+            Configuration conf = GetConfigByCode(code);
+            if (conf != null)
             {
-                Code = code,
-                Value = value,
-                Decription = description
-            };
+                conf.Value = value;
+                conf.Decription = description;
+                dbContext.Entry(conf).State = EntityState.Modified;
+            }
+            else
+            {
+                Configuration newConfig = new Configuration
+                {
+                    Code = code,
+                    Value = value,
+                    Decription = description
+                };
+                dbContext.Entry(newConfig).State = EntityState.Added;
+            }
 
-            dbContext.AddOrModify(config, "Code");
+            dbContext.SaveChanges();
         }
 
         public void AddSetting(string code, string value, string description = "")

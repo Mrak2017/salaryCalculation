@@ -18,12 +18,12 @@ namespace SalaryCalculation.Models
             string mainClassNamespace = typeof(ReorganizationMain).Namespace;
             for (int i = lastPassedVersion; i < currentVersion; i++)
             {
-                string className = mainClassNamespace + ".ToVersion" + currentVersion;
+                string className = mainClassNamespace + "." + ReorganizationMain.SubclassNamePrefix + currentVersion;
                 Type type = Type.GetType(className);
                 if (type != null)
                 {
-                    ReorganizationMain test = (ReorganizationMain) Activator.CreateInstance(type, context);
-                    test.Run();
+                    ReorganizationMain reorganization = (ReorganizationMain) Activator.CreateInstance(type, context);
+                    reorganization.Run();
                 }
                 else
                 {

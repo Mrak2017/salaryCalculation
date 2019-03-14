@@ -15,15 +15,15 @@ namespace SalaryCalculation.Controllers
 
         public SalaryCalculator(SalaryCalculationDBContext dbContext)
         {
-            this.personController = new PersonController(dbContext);
-            this.configurationController = new ConfigurationController(dbContext);
+            personController = new PersonController(dbContext);
+            configurationController = new ConfigurationController(dbContext);
         }
 
         public decimal CalculateTotalSalary(DateTime onDate)
         {
             Dictionary<Tuple<Person, DateTime>, decimal> calculationCache = new Dictionary<Tuple<Person, DateTime>, decimal>();
 
-            Person[] all = this.personController.GetAllPersons();
+            Person[] all = personController.GetAllPersons();
             decimal singleSalary = 0;
             foreach (var person in all)
             {
@@ -45,7 +45,7 @@ namespace SalaryCalculation.Controllers
 
         public decimal CalculateSalary(Person person, DateTime onDate)
         {
-            GroupType? currentGroup = this.personController.GetPersonGroupOnDate(person, onDate);
+            GroupType? currentGroup = personController.GetPersonGroupOnDate(person, onDate);
             if (currentGroup == null)
             {
                 return 0;
@@ -102,7 +102,7 @@ namespace SalaryCalculation.Controllers
         private decimal CalculateManagerSalaryAddition(Person person, GroupType group, DateTime onDate)
         {
             decimal subordinateRatio = GetSubordinateRatioByGroup(group);
-            Person[] subordinates = this.personController.GetFirstLevelSubordinates(person);
+            Person[] subordinates = personController.GetFirstLevelSubordinates(person);
             decimal result = 0;
             foreach (var sub in subordinates)
             {
@@ -114,7 +114,7 @@ namespace SalaryCalculation.Controllers
         private decimal CalculateSalesmanSalaryAddition(Person person, GroupType group, DateTime onDate)
         {
             decimal subordinateRatio = GetSubordinateRatioByGroup(group);
-            Person[] subordinates = this.personController.GetAllSubordinates(person);
+            Person[] subordinates = personController.GetAllSubordinates(person);
             decimal result = 0;
             foreach (var sub in subordinates)
             {
@@ -125,26 +125,26 @@ namespace SalaryCalculation.Controllers
 
         private decimal GetBaseSalaryByGroup(GroupType group)
         {
-            return this.configurationController
+            return configurationController
                 .GetSettingDecimalOrDefault(group.ToString() + ConfigurationController.BASE_SALARY_POSTFIX, 0);
         }
 
         private decimal GetWorkExperienceRatioByGroup(GroupType group)
         {
-            return this.configurationController
-                .GetSettingDecimalOrDefault(group.ToString() + ConfigurationController.WORK_EXPERIENCE_RATIO_POSTFIX, 0);
+            return configurationController
+                .GetSettingDecimalOrDefault(group.ToString() + ConfigurationController.WORK_EXPERIENCE_RATIO_POSTFIX, 0) / 100;
         }
 
         private decimal GetWorkExperienceMaxRatioByGroup(GroupType group)
         {
-            return this.configurationController
-                .GetSettingDecimalOrDefault(group.ToString() + ConfigurationController.WORK_EXPERIENCE_MAX_RATIO_POSTFIX, 0);
+            return configurationController
+                .GetSettingDecimalOrDefault(group.ToString() + ConfigurationController.WORK_EXPERIENCE_MAX_RATIO_POSTFIX, 0) / 100;
         }
 
         private decimal GetSubordinateRatioByGroup(GroupType group)
         {
-            return this.configurationController
-                .GetSettingDecimalOrDefault(group.ToString() + ConfigurationController.SUBORDINATE_RATIO_POSTFIX, 0);
+            return configurationController
+                .GetSettingDecimalOrDefault(group.ToString() + ConfigurationController.SUBORDINATE_RATIO_POSTFIX, 0) / 100;
         }
     }
 }

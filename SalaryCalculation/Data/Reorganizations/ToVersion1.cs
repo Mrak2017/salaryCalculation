@@ -51,17 +51,17 @@ namespace SalaryCalculation.Models.DataReorganizations
             controller.AddOrUpdateSetting(
                 GroupType.Employee.ToString() + ConfigurationController.WORK_EXPERIENCE_RATIO_POSTFIX,
                 3.ToString(),
-                "Коэффициент надбавки за время работы для группы 'Сотрудник'");
+                "Коэффициент надбавки за время работы для группы 'Сотрудник' (процент)");
 
             controller.AddOrUpdateSetting(
                 GroupType.Manager.ToString() + ConfigurationController.WORK_EXPERIENCE_RATIO_POSTFIX,
                 5.ToString(),
-                "Коэффициент надбавки за время работы для группы 'Менеджер'");
+                "Коэффициент надбавки за время работы для группы 'Менеджер' (процент)");
 
             controller.AddOrUpdateSetting(
                 GroupType.Salesman.ToString() + ConfigurationController.WORK_EXPERIENCE_RATIO_POSTFIX,
                 1.ToString(),
-                "Коэффициент надбавки за время работы для группы 'Продажник'");
+                "Коэффициент надбавки за время работы для группы 'Продажник' (процент)");
         }
 
         private void InitWorkExperienceMaxRationConfig()
@@ -69,17 +69,17 @@ namespace SalaryCalculation.Models.DataReorganizations
             controller.AddOrUpdateSetting(
                 GroupType.Employee.ToString() + ConfigurationController.WORK_EXPERIENCE_MAX_RATIO_POSTFIX,
                 30.ToString(),
-                "Максимальный коэффициент надбавки за время работы для группы 'Сотрудник'");
+                "Максимальный коэффициент надбавки за время работы для группы 'Сотрудник' (процент)");
 
             controller.AddOrUpdateSetting(
                 GroupType.Manager.ToString() + ConfigurationController.WORK_EXPERIENCE_MAX_RATIO_POSTFIX,
                 40.ToString(),
-                "Максимальный коэффициент надбавки за время работы для группы 'Менеджер'");
+                "Максимальный коэффициент надбавки за время работы для группы 'Менеджер' (процент)");
 
             controller.AddOrUpdateSetting(
                 GroupType.Salesman.ToString() + ConfigurationController.WORK_EXPERIENCE_MAX_RATIO_POSTFIX,
                 35.ToString(),
-                "Максимальный коэффициент надбавки за время работы для группы 'Продажник'");
+                "Максимальный коэффициент надбавки за время работы для группы 'Продажник' (процент)");
         }
 
         private void InitSubordinateRatio()
@@ -87,17 +87,17 @@ namespace SalaryCalculation.Models.DataReorganizations
             controller.AddOrUpdateSetting(
                 GroupType.Employee.ToString() + ConfigurationController.SUBORDINATE_RATIO_POSTFIX,
                 0.ToString(),
-                "Коэффициент надбавки за подчиненных для группы 'Сотрудник'");
+                "Коэффициент надбавки за подчиненных для группы 'Сотрудник' (процент)");
 
             controller.AddOrUpdateSetting(
                 GroupType.Manager.ToString() + ConfigurationController.SUBORDINATE_RATIO_POSTFIX,
                 0.5.ToString(),
-                "Коэффициент надбавки за подчиненных для группы 'Менеджер'");
+                "Коэффициент надбавки за подчиненных для группы 'Менеджер' (процент)");
 
             controller.AddOrUpdateSetting(
                 GroupType.Salesman.ToString() + ConfigurationController.SUBORDINATE_RATIO_POSTFIX,
                 0.3.ToString(),
-                "Коэффициент надбавки за подчиненных для группы 'Продажник'");
+                "Коэффициент надбавки за подчиненных для группы 'Продажник' (процент)");
         }
     }
 }

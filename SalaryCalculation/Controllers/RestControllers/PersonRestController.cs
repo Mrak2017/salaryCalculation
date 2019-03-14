@@ -10,10 +10,12 @@ namespace SalaryCalculation.Controllers
     public class PersonRestController : Controller
     {
         private readonly PersonController controller;
+        private readonly SalaryCalculator calculator;
 
         public PersonRestController(SalaryCalculationDBContext dbContext)
         {
             controller = new PersonController(dbContext);
+            calculator = new SalaryCalculator(dbContext);
         }
 
         [HttpGet("[action]")]
@@ -26,7 +28,8 @@ namespace SalaryCalculation.Controllers
         private PersonJournalDTO PreparePersonDTO(Person person)
         {
             GroupType? group = controller.GetPersonGroupOnDate(person, DateTime.Today);
-            return new PersonJournalDTO(person, group);
+            decimal currentSalary = calculator.CalculateSalary(person, DateTime.Today);
+            return new PersonJournalDTO(person, group, currentSalary);
         }
 
         [HttpPost("[action]")]

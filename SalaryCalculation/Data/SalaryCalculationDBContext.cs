@@ -18,23 +18,7 @@ namespace SalaryCalculation.Models
         public DbSet<OrganizationStructureItem> OrganizationStructure { get; set; }
 
         public DbSet<Configuration> Configs { get; set; }
-
-        public void AddOrModify<TEntity>(TEntity entity, string key) where TEntity: class
-        {
-            if (Set<TEntity>().Any(e => 
-                e.GetType().GetProperty(key).GetValue(e, null) 
-                == entity.GetType().GetProperty(key).GetValue(entity, null)))
-            {
-                Entry(entity).State = EntityState.Modified;
-            }
-            else
-            {
-                Entry(entity).State = EntityState.Added;
-            }
-
-            SaveChanges();
-        }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             this.InitPerson(modelBuilder);

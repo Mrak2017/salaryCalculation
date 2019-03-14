@@ -23,7 +23,9 @@ namespace SalaryCalculation.RestControllers.DTO
 
         public decimal? BaseSalaryPart { get; set; }
 
-        public PersonJournalDTO(Person person, GroupType? group)
+        public decimal CurrentSalary { get; set; }
+
+        public PersonJournalDTO(Person person, GroupType? group, decimal currentSalary)
         {
             Id = person.ID;
             Login = person.Login;
@@ -37,6 +39,7 @@ namespace SalaryCalculation.RestControllers.DTO
             {
                 CurrentGroup = group.ToString();
             }
+            CurrentSalary = currentSalary;
         }
     }
 }
