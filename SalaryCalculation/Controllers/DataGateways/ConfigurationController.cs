@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace SalaryCalculation.Controllers
 {
+    /** Класс для работы с системными настройками приложения*/
     public class ConfigurationController
     {
         public const string LAST_DATA_REVISION_CODE = "LastDataRevision";
@@ -26,7 +27,7 @@ namespace SalaryCalculation.Controllers
             return dbContext.Configs.OrderBy(e => e.ID).ToArray();
         }
 
-        public decimal GetSettingDecimalOrDefault(string code, decimal defaultVal)
+        public decimal GetConfigurationDecimalOrDefault(string code, decimal defaultVal)
         {
             Configuration conf = GetConfigByCode(code);
             if (conf != null)
@@ -37,7 +38,7 @@ namespace SalaryCalculation.Controllers
             return defaultVal;
         }
 
-        public int GetSettingIntOrDefault(string code, int defaultVal)
+        public int GetConfigurationIntOrDefault(string code, int defaultVal)
         {
             Configuration conf = GetConfigByCode(code);
             if (conf != null)
@@ -48,7 +49,7 @@ namespace SalaryCalculation.Controllers
             return defaultVal;
         }
 
-        public void AddOrUpdateSetting(string code, string value, string description = "")
+        public void AddOrUpdateConfiguration(string code, string value, string description = "")
         {
             Configuration conf = GetConfigByCode(code);
             if (conf != null)
@@ -71,7 +72,7 @@ namespace SalaryCalculation.Controllers
             dbContext.SaveChanges();
         }
 
-        public void AddSetting(string code, string value, string description = "")
+        public void AddConfiguration(string code, string value, string description = "")
         {
             if (GetConfigByCode(code) != null)
             {
@@ -89,12 +90,35 @@ namespace SalaryCalculation.Controllers
             dbContext.SaveChanges();
         }
 
+        public Configuration GetConfigurationById(int id)
+        {
+            return dbContext.Configs.Where(e => e.ID == id).SingleOrDefault();
+        }
+
+        public void UpdateConfiguration(Configuration configuration)
+        {
+            Configuration existed = dbContext.Configs
+                .Where(e => e.Code == configuration.Code && e.ID != configuration.ID).SingleOrDefault();
+            if (existed != null)
+            {
+                throw new Exception("Настройка с кодом '" + existed.Code + "' уже существует (id:" + existed.ID + ")");
+            }
+
+            dbContext.Entry(configuration).State = EntityState.Modified;
+            dbContext.SaveChanges();
+        }
+
+        public void DeleteConfiguration(Configuration conf)
+        {
+            dbContext.Configs.Remove(conf);
+            dbContext.SaveChanges();
+        }
+
         private Configuration GetConfigByCode(string code)
         {
             return dbContext.Configs
                 .Where(c => c.Code.Equals(code))
                 .SingleOrDefault();
         }
-
     }
 }

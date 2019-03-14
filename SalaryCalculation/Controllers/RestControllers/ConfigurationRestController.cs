@@ -23,11 +23,37 @@ namespace SalaryCalculation.Controllers
                 .Select(e => new ConfigurationJournalDTO(e)).ToArray();
         }
 
-        
+        [HttpGet("[action]")]
+        public ConfigurationDTO GetConfig(int id)
+        {
+            return new ConfigurationDTO();
+        }
+
         [HttpPost("[action]")]
         public void AddConfig([FromBody] ConfigurationDTO dto)
         {
-            controller.AddSetting(dto.Code, dto.Value, dto.Description);
+            controller.AddConfiguration(dto.Code, dto.Value, dto.Description);
+        }
+
+        [HttpPut("[action]")]
+        public void UpdateConfig([FromBody] ConfigurationDTO dto)
+        {
+            Configuration conf = controller.GetConfigurationById(dto.Id);
+            conf.Code = dto.Code;
+            conf.Value = dto.Value;
+            conf.Decription = dto.Description;
+            controller.UpdateConfiguration(conf);
+        }
+
+        [HttpDelete("[action]")]
+        public void DeleteConfig(int id)
+        {
+            Configuration conf = controller.GetConfigurationById(id);
+            if (conf == null)
+            {
+                throw new Exception("Настройка с id:" + id + " не найдена");
+            }
+            controller.DeleteConfiguration(conf);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace SalaryCalculation.Controllers
 {
+    /**Класс для работы с сотрудниками CRUD*/
     public class PersonController
     {
         private readonly SalaryCalculationDBContext dbContext;

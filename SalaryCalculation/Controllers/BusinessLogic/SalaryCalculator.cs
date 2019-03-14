@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SalaryCalculation.Controllers
 {
+    /** Основной класс для расчета заработной платы сотрудников*/
     public class SalaryCalculator
     {
         private const string ERROR_START_TEXT = "Ошибка при расчете заработной платы. ";
@@ -126,25 +127,25 @@ namespace SalaryCalculation.Controllers
         private decimal GetBaseSalaryByGroup(GroupType group)
         {
             return configurationController
-                .GetSettingDecimalOrDefault(group.ToString() + ConfigurationController.BASE_SALARY_POSTFIX, 0);
+                .GetConfigurationDecimalOrDefault(group.ToString() + ConfigurationController.BASE_SALARY_POSTFIX, 0);
         }
 
         private decimal GetWorkExperienceRatioByGroup(GroupType group)
         {
             return configurationController
-                .GetSettingDecimalOrDefault(group.ToString() + ConfigurationController.WORK_EXPERIENCE_RATIO_POSTFIX, 0) / 100;
+                .GetConfigurationDecimalOrDefault(group.ToString() + ConfigurationController.WORK_EXPERIENCE_RATIO_POSTFIX, 0) / 100;
         }
 
         private decimal GetWorkExperienceMaxRatioByGroup(GroupType group)
         {
             return configurationController
-                .GetSettingDecimalOrDefault(group.ToString() + ConfigurationController.WORK_EXPERIENCE_MAX_RATIO_POSTFIX, 0) / 100;
+                .GetConfigurationDecimalOrDefault(group.ToString() + ConfigurationController.WORK_EXPERIENCE_MAX_RATIO_POSTFIX, 0) / 100;
         }
 
         private decimal GetSubordinateRatioByGroup(GroupType group)
         {
             return configurationController
-                .GetSettingDecimalOrDefault(group.ToString() + ConfigurationController.SUBORDINATE_RATIO_POSTFIX, 0) / 100;
+                .GetConfigurationDecimalOrDefault(group.ToString() + ConfigurationController.SUBORDINATE_RATIO_POSTFIX, 0) / 100;
         }
     }
 }

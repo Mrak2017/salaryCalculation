@@ -14,7 +14,7 @@ namespace SalaryCalculation.Models
             context.Database.EnsureCreated();
 
             ConfigurationController controller = new ConfigurationController(context);
-            int lastPassedVersion = controller.GetSettingIntOrDefault(ConfigurationController.LAST_DATA_REVISION_CODE, 0);
+            int lastPassedVersion = controller.GetConfigurationIntOrDefault(ConfigurationController.LAST_DATA_REVISION_CODE, 0);
             string mainClassNamespace = typeof(ReorganizationMain).Namespace;
             for (int i = lastPassedVersion; i < currentVersion; i++)
             {
@@ -32,7 +32,7 @@ namespace SalaryCalculation.Models
             }
             if (lastPassedVersion != currentVersion)
             {
-                controller.AddOrUpdateSetting(ConfigurationController.LAST_DATA_REVISION_CODE, currentVersion.ToString());
+                controller.AddOrUpdateConfiguration(ConfigurationController.LAST_DATA_REVISION_CODE, currentVersion.ToString());
             }
         }
     }
