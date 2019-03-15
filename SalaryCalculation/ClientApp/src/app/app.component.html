@@ -11,6 +11,7 @@
         <mat-action-list>
             <button *ngFor="let item of sideNavItems;"
                     class="app-menu-list-item"
+                    [routerLinkActive]="['selected']"
                     mat-list-item
                     [routerLink]="item.link">{{item.name}}
             </button>

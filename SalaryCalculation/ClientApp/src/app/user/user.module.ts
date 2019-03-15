@@ -6,7 +6,7 @@ import { AddPersonDialogComponent } from './persons/add-person-dialog/add-person
 import { ReactiveFormsModule } from "@angular/forms";
 import { ConfigurationsJournalComponent } from './configuration/configurations-journal/configurations-journal.component';
 import { ConfigurationsMainService } from "./configuration/configurations-main.service";
-import { AddConfigurationDialogComponent } from './configuration/add-configuration-dialog/add-configuration-dialog.component';
+import { EditConfigurationDialogComponent } from './configuration/edit-configuration-dialog/edit-configuration-dialog.component';
 
 @NgModule({
   imports: [
@@ -17,7 +17,7 @@ import { AddConfigurationDialogComponent } from './configuration/add-configurati
     PersonsJournalComponent,
     AddPersonDialogComponent,
     ConfigurationsJournalComponent,
-    AddConfigurationDialogComponent,
+    EditConfigurationDialogComponent,
   ],
   exports: [
     PersonsJournalComponent,
@@ -29,7 +29,7 @@ import { AddConfigurationDialogComponent } from './configuration/add-configurati
   ],
   entryComponents: [
     AddPersonDialogComponent,
-    AddConfigurationDialogComponent,
+    EditConfigurationDialogComponent,
   ],
 })
 export class UserModule {

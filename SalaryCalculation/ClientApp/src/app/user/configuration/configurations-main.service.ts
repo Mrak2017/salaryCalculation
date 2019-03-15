@@ -6,7 +6,8 @@ import { CheckUtils } from "../../utils/check-utils";
 import { MatDialog } from "@angular/material";
 import { ConfigurationItem } from "./models/configuration-item.model";
 import { Configuration } from "./models/configuration.model";
-import { AddConfigurationDialogComponent } from "./add-configuration-dialog/add-configuration-dialog.component";
+import { EditConfigurationDialogComponent } from "./edit-configuration-dialog/edit-configuration-dialog.component";
+import { SimpleYesNoDialogComponent } from "../../shared/common-dialogs/simple-yes-no-dialog/simple-yes-no-dialog.component";
 
 @Injectable()
 export class ConfigurationsMainService {
@@ -33,9 +34,42 @@ export class ConfigurationsMainService {
   }
 
   addConfig() {
-    const dialogRef = this.dialog.open(AddConfigurationDialogComponent, {
+    this.editDialog(undefined, 'Добавить настройку', dto => this.http.post(this.restUrl() + 'AddConfig', dto));
+  }
+
+  editConfig(id: number) {
+    this.http.get<Configuration>(this.restUrl() + 'GetConfig/' + id)
+        .pipe(map(value => new Configuration(value)))
+        .toPromise()
+        .then(conf => this.editDialog(conf, 'Изменить настройку', dto => this.http.put(this.restUrl() + 'UpdateConfig', dto)));
+  }
+
+  deleteConfig(id: number, code: string) {
+    const dialogRef = this.dialog.open(SimpleYesNoDialogComponent, {
       width: '400px',
       disableClose: true,
+      data: {
+        message: 'Вы уверены, что хотите удалить настройку с кодом "' + code + '"?',
+      },
+    });
+
+    dialogRef.afterClosed()
+        .pipe(
+            filter(CheckUtils.isExists),
+            switchMap(() => this.deleteConfigInternal(id)),
+            take(1))
+        .toPromise()
+        .then(() => this.refresh());
+  }
+
+  private editDialog(conf: Configuration = new Configuration(), title: string, callback: Function) {
+    const dialogRef = this.dialog.open(EditConfigurationDialogComponent, {
+      width: '400px',
+      disableClose: true,
+      data: {
+        configuration: conf,
+        title: title,
+      },
     });
 
     dialogRef.afterClosed()
@@ -43,11 +77,12 @@ export class ConfigurationsMainService {
             filter(CheckUtils.isExists),
             map((result: Configuration) => (
                 {
+                  id: result.id,
                   code: result.code,
                   value: result.configValue,
-                  description: result.description
+                  description: result.description,
                 })),
-            switchMap(dto => this.http.post(this.restUrl() + 'AddConfig', dto)),
+            switchMap(dto => callback(dto)),
             take(1))
         .toPromise()
         .then(() => this.refresh());
@@ -58,6 +93,10 @@ export class ConfigurationsMainService {
         .pipe(
             map(data => data.map(value => new ConfigurationItem(value))),
         )
+  }
+
+  private deleteConfigInternal(id: number): Observable<void> {
+    return this.http.delete<void>(this.restUrl() + 'DeleteConfig/' + id);
   }
 
   private restUrl(): string {

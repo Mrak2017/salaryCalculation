@@ -13,6 +13,7 @@ import {
   MatToolbarModule,
 } from "@angular/material";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { SimpleYesNoDialogComponent } from './common-dialogs/simple-yes-no-dialog/simple-yes-no-dialog.component';
 
 @NgModule({
   imports: [
@@ -42,6 +43,13 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     MatDatepickerModule,
     MatNativeDateModule,
     MatSelectModule,
+    SimpleYesNoDialogComponent,
+  ],
+  declarations: [
+    SimpleYesNoDialogComponent,
+  ],
+  entryComponents: [
+    SimpleYesNoDialogComponent,
   ],
 })
 export class SharedModule {

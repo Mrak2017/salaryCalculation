@@ -23,10 +23,15 @@ namespace SalaryCalculation.Controllers
                 .Select(e => new ConfigurationJournalDTO(e)).ToArray();
         }
 
-        [HttpGet("[action]")]
+        [HttpGet("[action]/{id}")]
         public ConfigurationDTO GetConfig(int id)
         {
-            return new ConfigurationDTO();
+            Configuration config = controller.GetConfigurationById(id);
+            if (config == null)
+            {
+                throw new Exception("Настройка с id: " + id + " не найдена");
+            }
+            return new ConfigurationDTO(config);
         }
 
         [HttpPost("[action]")]
@@ -45,7 +50,7 @@ namespace SalaryCalculation.Controllers
             controller.UpdateConfiguration(conf);
         }
 
-        [HttpDelete("[action]")]
+        [HttpDelete("[action]/{id}")]
         public void DeleteConfig(int id)
         {
             Configuration conf = controller.GetConfigurationById(id);

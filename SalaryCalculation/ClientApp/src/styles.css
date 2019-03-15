@@ -22,3 +22,11 @@ body {
   bottom: 30px;
   right: 30px;
 }
+
+.clickable-item {
+  cursor: pointer;
+}
+
+.icon-column {
+  width: 50px;
+}

@@ -6,7 +6,7 @@ export class Configuration {
   public configValue: string;
   public description: string;
 
-  constructor(data: any) {
+  constructor(data?: any) {
     if (CheckUtils.isExists(data)) {
       this.id = data.id;
       this.code = data.code;

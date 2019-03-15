@@ -33,6 +33,30 @@
       <td mat-cell *matCellDef="let element"> {{element.description}}</td>
     </ng-container>
 
+    <ng-container matColumnDef="editColumn">
+      <th mat-header-cell
+          *matHeaderCellDef
+          class="icon-column"> </th>
+      <td mat-cell *matCellDef="let element">
+        <mat-icon aria-label="Изменить настройку"
+                  title="Изменить настройку"
+                  class="clickable-item"
+                  (click)="editConfig(element.id)">edit</mat-icon>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="deleteColumn" style="width: 100px">
+      <th mat-header-cell
+          *matHeaderCellDef
+          class="icon-column"> </th>
+      <td mat-cell *matCellDef="let element">
+        <mat-icon aria-label="Удалить настройку"
+                  title="Удалить настройку"
+                  class="clickable-item"
+                  (click)="deleteConfig(element.id, element.code)">clear</mat-icon>
+      </td>
+    </ng-container>
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>

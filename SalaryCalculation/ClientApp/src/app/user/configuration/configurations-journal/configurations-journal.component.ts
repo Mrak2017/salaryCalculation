@@ -10,13 +10,15 @@ import { ConfigurationItem } from "../models/configuration-item.model";
 })
 export class ConfigurationsJournalComponent implements OnInit {
 
-  displayedColumns: (keyof ConfigurationItem)[] = [
+  displayedColumns: string[] = [
     'id',
     'insertDate',
     'updateDate',
     'code',
     'value',
-    'description'];
+    'description',
+    'editColumn',
+    'deleteColumn'];
 
   configs$: Observable<ConfigurationItem[]>;
 
@@ -29,6 +31,14 @@ export class ConfigurationsJournalComponent implements OnInit {
 
   addConfig() {
     this.service.addConfig();
+  }
+
+  editConfig(id: number) {
+    this.service.editConfig(id);
+  }
+
+  deleteConfig(id: number, code: string) {
+    this.service.deleteConfig(id, code);
   }
 
 }
