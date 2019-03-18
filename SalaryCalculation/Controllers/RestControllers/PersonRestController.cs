@@ -21,8 +21,8 @@ namespace SalaryCalculation.Controllers
         [HttpGet("[action]")]
         public PersonJournalDTO[] AllPersons()
         {
-            return this.controller.GetAllPersons()
-                .Select(person => this.PreparePersonDTO(person)).ToArray();
+            return controller.GetAllPersons()
+                .Select(person => PreparePersonDTO(person)).ToArray();
         }
 
         private PersonJournalDTO PreparePersonDTO(Person person)
@@ -52,7 +52,45 @@ namespace SalaryCalculation.Controllers
                 GroupType = (GroupType)Enum.Parse(typeof(GroupType), dto.CurrentGroup)
             };
 
-            this.controller.AddPerson(person, p2g);
+            controller.AddPerson(person, p2g);
+        }
+
+        [HttpGet("[action]/{id}")]
+        public PersonDTO GetPerson(int id)
+        {
+            Person person = controller.GetPersonById(id);
+            if (person == null)
+            {
+                throw new Exception("Сотрудник с id: " + id + " не найден");
+            }
+
+            Person2Group[] groups = controller.GetAllGroups(person);
+            return new PersonDTO(person, groups);
+        }
+
+        [HttpPut("[action]")]
+        public void UpdatePerson([FromBody] PersonDTO dto)
+        {
+            Person person = controller.GetPersonById(dto.Id);
+            person.Login = dto.Login;
+            person.Password = dto.Password;
+            person.FirstName = dto.FirstName;
+            person.MiddleName = dto.MiddleName;
+            person.LastName = dto.LastName;
+            person.StartDate = dto.StartDate;
+            person.EndDate = dto.EndDate;
+            person.BaseSalaryPart = dto.BaseSalaryPart;
+
+            controller.UpdatePerson(person);
+        }
+
+        [HttpPut("[action]/{id}")]
+        public void UpdateChief(int id, [FromBody] int chiefId)
+        {
+            Person person = controller.GetPersonById(id);
+            Person chief = controller.GetPersonById(chiefId);
+
+            controller.UpdateChief(person, chief);
         }
     }
 }

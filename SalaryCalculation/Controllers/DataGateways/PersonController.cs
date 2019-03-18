@@ -1,4 +1,5 @@
-﻿using SalaryCalculation.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using SalaryCalculation.Models;
 using System;
 using System.Linq;
 
@@ -16,15 +17,15 @@ namespace SalaryCalculation.Controllers
 
         public Person[] GetFirstLevelSubordinates(Person person)
         {
-            return this.dbContext.OrganizationStructure
-                .Where(o => Int32.Parse(o.MaterializedPath.Last()) == person.ID)
-                .Select(o => o.Person)
+            return dbContext.OrganizationStructure
+                .Where(o => o.MaterializedPath != null && int.Parse(o.MaterializedPath.Last()) == person.ID)
+                .Select(e => e.Person)
                 .ToArray();
         }
 
         public Person[] GetAllSubordinates(Person person)
         {
-            return this.dbContext.OrganizationStructure
+            return dbContext.OrganizationStructure
                 .Where(o => o.MaterializedPath.Contains(Convert.ToString(person.ID)))
                 .Select(o => o.Person)
                 .ToArray();
@@ -32,7 +33,7 @@ namespace SalaryCalculation.Controllers
 
         public GroupType? GetPersonGroupOnDate(Person person, DateTime onDate)
         {
-            Person2Group p2g = this.dbContext.Person2Groups
+            Person2Group p2g = dbContext.Person2Groups
                 .Where(g =>
                     g.Person == person
                     && g.PeriodStart <= onDate
@@ -51,7 +52,7 @@ namespace SalaryCalculation.Controllers
 
         public Person[] GetAllPersons()
         {
-            return this.dbContext.Persons.ToArray();
+            return dbContext.Persons.ToArray();
         }
 
         public void AddPerson(Person person, Person2Group p2g)
@@ -62,11 +63,57 @@ namespace SalaryCalculation.Controllers
                 throw new Exception("Сотрудник с логином '" + person.Login + "' уже существует.");
             }
 
-            this.dbContext.Persons.Add(person);
+            dbContext.Persons.Add(person);
             
             p2g.Person = person;
-            this.dbContext.Person2Groups.Add(p2g);
-            this.dbContext.SaveChanges();
+            dbContext.Person2Groups.Add(p2g);
+
+            OrganizationStructureItem item = new OrganizationStructureItem
+            {
+                Person = person,
+                PersonId = person.ID
+            };
+            dbContext.OrganizationStructure.Add(item);
+
+            dbContext.SaveChanges();
+        }
+
+        public Person GetPersonById(int id)
+        {
+            return dbContext.Persons.Where(e => e.ID == id).SingleOrDefault();
+        }
+
+        public Person2Group[] GetAllGroups(Person person)
+        {
+            return dbContext.Person2Groups
+                .Where(g => g.Person == person && g.Active == true)
+                .OrderByDescending(g => g.ID)
+                .ToArray();
+        }
+
+        public void UpdatePerson(Person person)
+        {
+            Person existed = dbContext.Persons
+                .Where(e => e.Login == person.Login && e.ID != person.ID).SingleOrDefault();
+            if (existed != null)
+            {
+                throw new Exception("Сотрудник с логином '" + existed.Login + "' уже существует (id:" + existed.ID + ")");
+            }
+
+            dbContext.Entry(person).State = EntityState.Modified;
+            dbContext.SaveChanges();
+        }
+
+        public void UpdateChief(Person person, Person chief)
+        {
+            OrganizationStructureItem personItem = GetStructureItem(person);
+            OrganizationStructureItem chiefItem = GetStructureItem(chief);
+
+            personItem.Parent = chiefItem;
+            personItem.ParentId = chiefItem.ID;
+
+            dbContext.OrganizationStructure.Update(personItem);
+            dbContext.SaveChanges();
         }
 
         public void RecalculateMaterializedPathOrgStructure()
@@ -74,11 +121,16 @@ namespace SalaryCalculation.Controllers
             /// https://github.com/aspnet/EntityFrameworkCore/issues/3241#issuecomment-411928305
         }
 
-        private Person FindPersonByLogin(String login)
+        private Person FindPersonByLogin(string login)
         {
-            return this.dbContext.Persons
+            return dbContext.Persons
                 .Where(p => p.Login == login)
                 .SingleOrDefault();
+        }
+
+        private OrganizationStructureItem GetStructureItem(Person person)
+        {
+            return dbContext.OrganizationStructure.Where(e => e.PersonId == person.ID).SingleOrDefault();
         }
     }
 }

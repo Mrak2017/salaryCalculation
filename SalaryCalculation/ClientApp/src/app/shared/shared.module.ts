@@ -14,6 +14,7 @@ import {
 } from "@angular/material";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { SimpleYesNoDialogComponent } from './common-dialogs/simple-yes-no-dialog/simple-yes-no-dialog.component';
+import { RouterModule } from "@angular/router";
 
 @NgModule({
   imports: [
@@ -29,6 +30,7 @@ import { SimpleYesNoDialogComponent } from './common-dialogs/simple-yes-no-dialo
     MatDatepickerModule,
     MatNativeDateModule,
     MatSelectModule,
+    RouterModule,
   ],
   exports: [
     MatToolbarModule,
@@ -44,6 +46,7 @@ import { SimpleYesNoDialogComponent } from './common-dialogs/simple-yes-no-dialo
     MatNativeDateModule,
     MatSelectModule,
     SimpleYesNoDialogComponent,
+    RouterModule,
   ],
   declarations: [
     SimpleYesNoDialogComponent,

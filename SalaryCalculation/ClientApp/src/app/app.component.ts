@@ -9,9 +9,9 @@ export class AppComponent {
 
   sideNavItems = [{
     name: 'Сотрудники',
-    link: 'persons-journal',
+    link: 'persons',
   }, {
     name: 'Настройки',
-    link: 'configurations-journal',
+    link: 'configurations',
   }];
 }

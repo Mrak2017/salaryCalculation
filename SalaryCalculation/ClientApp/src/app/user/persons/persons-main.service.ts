@@ -11,6 +11,8 @@ import { Person } from "./models/person.model";
 @Injectable()
 export class PersonsMainService {
 
+  public static readonly NAME_MAX_LENGTH = 100;
+
   public readonly allPersons$: Observable<PersonItem[]>;
 
   private readonly refreshSubj: Subject<void> = new Subject<void>();
@@ -66,6 +68,17 @@ export class PersonsMainService {
             take(1))
         .toPromise()
         .then(() => this.refresh());
+  }
+
+  getPerson(id: number): Observable<Person> {
+    return this.http.get<Person>(this.restUrl() + 'GetPerson/' + id)
+        .pipe(
+            map(data => new Person(data)),
+        );
+  }
+
+  updatePerson(person: Person) {
+    this.http.put(this.restUrl() + 'UpdatePerson/' + person.id, person);
   }
 
   private restUrl(): string {

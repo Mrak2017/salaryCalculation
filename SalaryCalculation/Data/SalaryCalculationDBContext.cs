@@ -121,6 +121,11 @@ namespace SalaryCalculation.Models
                     .WithOne(e => e.Parent)
                     .HasForeignKey(e => e.ParentId);
             });
+
+            /// Indexes
+            builder.Entity<OrganizationStructureItem>()
+                .HasIndex(e => e.PersonId)
+                .IsUnique();
         }
 
         public void InitConfigs(ModelBuilder builder)

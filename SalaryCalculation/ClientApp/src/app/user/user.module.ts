@@ -7,6 +7,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { ConfigurationsJournalComponent } from './configuration/configurations-journal/configurations-journal.component';
 import { ConfigurationsMainService } from "./configuration/configurations-main.service";
 import { EditConfigurationDialogComponent } from './configuration/edit-configuration-dialog/edit-configuration-dialog.component';
+import { PersonPageComponent } from './persons/person-page/person-page.component';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { EditConfigurationDialogComponent } from './configuration/edit-configura
     AddPersonDialogComponent,
     ConfigurationsJournalComponent,
     EditConfigurationDialogComponent,
+    PersonPageComponent,
   ],
   exports: [
     PersonsJournalComponent,

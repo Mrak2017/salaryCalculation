@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from "rxjs/index";
 import { PersonsMainService } from "../persons-main.service";
 import { PersonItem } from "../models/person-item.model";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-persons-journal',
@@ -10,18 +11,19 @@ import { PersonItem } from "../models/person-item.model";
 })
 export class PersonsJournalComponent implements OnInit {
 
-  displayedColumns: (keyof PersonItem)[] = [
+  displayedColumns: string[] = [
     'id',
     'login',
     'fullName',
     'startDate',
     'currentGroup',
     'baseSalaryPart',
-    'currentSalary'];
+    'currentSalary',
+    'editColumn'];
 
   persons$: Observable<PersonItem[]>;
 
-  constructor(private service: PersonsMainService) {
+  constructor(private service: PersonsMainService, private router: Router) {
   }
 
   ngOnInit() {
@@ -30,6 +32,10 @@ export class PersonsJournalComponent implements OnInit {
 
   addPerson() {
     this.service.addPerson();
+  }
+
+  editPerson(id: number) {
+    this.router.navigate(['persons', id]);
   }
 
   deletePerson(id: number) {
