@@ -7,6 +7,7 @@ import { AddPersonDialogComponent } from "./add-person-dialog/add-person-dialog.
 import { CheckUtils } from "../../utils/check-utils";
 import { PersonItem } from "./models/person-item.model";
 import { Person } from "./models/person.model";
+import { ComboBoxItemDTO } from "../../shared/models/combobox-item-dto";
 
 @Injectable()
 export class PersonsMainService {
@@ -29,13 +30,6 @@ export class PersonsMainService {
 
   refresh() {
     this.refreshSubj.next();
-  }
-
-  private getAllPersons(): Observable<PersonItem[]> {
-    return this.http.get<PersonItem[]>(this.restUrl() + 'AllPersons')
-        .pipe(
-            map(data => data.map(value => new PersonItem(value))),
-        )
   }
 
   deletePerson(id: number): void {
@@ -69,6 +63,20 @@ export class PersonsMainService {
     return this.http.put(this.restUrl() + 'UpdatePerson/' + person.id, PersonsMainService.convertToDTO(person));
   }
 
+  getPossibleChiefs():Observable<ComboBoxItemDTO[]> {
+    return this.http.get<any[]>(this.restUrl() + 'GetPossibleChiefs')
+        .pipe(
+            map(data => data.map(value => new ComboBoxItemDTO(value.id, value.name))),
+        )
+  }
+
+  private getAllPersons(): Observable<PersonItem[]> {
+    return this.http.get<PersonItem[]>(this.restUrl() + 'GetAllPersons')
+        .pipe(
+            map(data => data.map(value => new PersonItem(value))),
+        )
+  }
+
   private static convertToDTO(person: Person) {
     return {
       id: person.id,
@@ -78,7 +86,8 @@ export class PersonsMainService {
       middleName: person.middleName,
       lastName: person.lastName,
       startDate: person.startDate,
-      currentGroup: person.currentGroup ? person.currentGroup.code : null,
+      endDate: CheckUtils.isExists(person.endDate) ? person.endDate : null,
+      currentGroup: CheckUtils.isExists(person.currentGroup) ? person.currentGroup.code : null,
       baseSalaryPart: person.baseSalaryPart,
     };
   }

@@ -11,6 +11,7 @@ export class Person {
   public middleName: string;
   public lastName: string;
   public startDate: Date;
+  public endDate: Date;
   public currentGroup: GroupTypeEnum;
   public baseSalaryPart: number;
 
@@ -23,6 +24,7 @@ export class Person {
       this.middleName = data.middleName;
       this.lastName = data.lastName;
       this.startDate = new Date(data.startDate);
+      this.endDate = CheckUtils.isExists(data.endDate) ? new Date(data.endDate) : null;
       if (CheckUtils.isExists(data.currentGroup)) {
         this.currentGroup = GroupTypeEnum.valueOf(data.currentGroup);
       }

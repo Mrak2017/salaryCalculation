@@ -19,19 +19,12 @@ namespace SalaryCalculation.Controllers
         }
 
         [HttpGet("[action]")]
-        public PersonJournalDTO[] AllPersons()
+        public PersonJournalDTO[] GetAllPersons()
         {
             return controller.GetAllPersons()
                 .Select(person => PreparePersonDTO(person)).ToArray();
         }
-
-        private PersonJournalDTO PreparePersonDTO(Person person)
-        {
-            GroupType? group = controller.GetPersonGroupOnDate(person, DateTime.Today);
-            decimal currentSalary = calculator.CalculateSalary(person, DateTime.Today);
-            return new PersonJournalDTO(person, group, currentSalary);
-        }
-
+        
         [HttpPost("[action]")]
         public void AddPerson([FromBody] PersonDTO dto)
         {
@@ -84,6 +77,14 @@ namespace SalaryCalculation.Controllers
             controller.UpdatePerson(person);
         }
 
+        [HttpGet("[action]")]
+        public ComboBoxItemDTO[] GetPossibleChiefs()
+        {
+            return controller.GetPossibleChiefs()
+                .Select(person => new ComboBoxItemDTO(person))
+                .ToArray();
+        }
+
         [HttpPut("[action]/{id}")]
         public void UpdateChief(int id, [FromBody] int chiefId)
         {
@@ -91,6 +92,13 @@ namespace SalaryCalculation.Controllers
             Person chief = controller.GetPersonById(chiefId);
 
             controller.UpdateChief(person, chief);
+        }
+
+        private PersonJournalDTO PreparePersonDTO(Person person)
+        {
+            GroupType? group = controller.GetPersonGroupOnDate(person, DateTime.Today);
+            decimal currentSalary = calculator.CalculateSalary(person, DateTime.Today);
+            return new PersonJournalDTO(person, group, currentSalary);
         }
     }
 }

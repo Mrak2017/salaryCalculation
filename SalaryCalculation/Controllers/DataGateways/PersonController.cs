@@ -31,6 +31,40 @@ namespace SalaryCalculation.Controllers
                 .ToArray();
         }
 
+        public Person[] GetPossibleChiefs()
+        {
+            /** выборка с использованием Join*/
+            GroupType[] groups = { GroupType.Manager, GroupType.Salesman };
+            return dbContext.Persons
+                .Join(dbContext.Person2Groups,
+                    p => p,
+                    g => g.Person,
+                    (p, g) => new { Person = p, Person2Group = g })
+                .Where(obj =>
+                    obj.Person2Group.PeriodStart <= DateTime.Today
+                    && (obj.Person2Group.PeriodEnd == null || obj.Person2Group.PeriodEnd >= DateTime.Today)
+                    && obj.Person2Group.Active == true
+                    && obj.Person.Active == true
+                    && Array.IndexOf(groups, obj.Person2Group.GroupType) > -1)
+                .Select(obj => obj.Person)
+                .Distinct()
+                .ToArray();
+
+            /**
+             альтернативная более простая выборка
+             
+            return dbContext.Person2Groups.Where(g =>
+                g.PeriodStart <= DateTime.Today
+                && (g.PeriodEnd == null || g.PeriodEnd >= DateTime.Today)
+                && g.Active == true
+                && g.Person.Active == true
+                && Array.IndexOf(groups, obj.Person2Group.GroupType) > -1)
+                .Select(g => g.Person)
+                .Distinct()
+                .ToArray();
+            */
+        }
+
         public GroupType? GetPersonGroupOnDate(Person person, DateTime onDate)
         {
             Person2Group p2g = dbContext.Person2Groups
