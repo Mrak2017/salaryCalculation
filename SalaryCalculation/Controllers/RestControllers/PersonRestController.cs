@@ -68,7 +68,7 @@ namespace SalaryCalculation.Controllers
             return new PersonDTO(person, groups);
         }
 
-        [HttpPut("[action]")]
+        [HttpPut("[action]/{id}")]
         public void UpdatePerson([FromBody] PersonDTO dto)
         {
             Person person = controller.GetPersonById(dto.Id);

@@ -11,8 +11,6 @@ import { Person } from "./models/person.model";
 @Injectable()
 export class PersonsMainService {
 
-  public static readonly NAME_MAX_LENGTH = 100;
-
   public readonly allPersons$: Observable<PersonItem[]>;
 
   private readonly refreshSubj: Subject<void> = new Subject<void>();
@@ -53,17 +51,7 @@ export class PersonsMainService {
     dialogRef.afterClosed()
         .pipe(
             filter(CheckUtils.isExists),
-            map((result: Person) => (
-                {
-                  login: result.login,
-                  password: result.password,
-                  firstName: result.firstName,
-                  middleName: result.middleName,
-                  lastName: result.lastName,
-                  startDate: result.startDate,
-                  currentGroup: result.currentGroup.code,
-                  baseSalaryPart: result.baseSalaryPart,
-                })),
+            map(PersonsMainService.convertToDTO),
             switchMap(dto => this.http.post(this.restUrl() + 'AddPerson', dto)),
             take(1))
         .toPromise()
@@ -77,8 +65,22 @@ export class PersonsMainService {
         );
   }
 
-  updatePerson(person: Person) {
-    this.http.put(this.restUrl() + 'UpdatePerson/' + person.id, person);
+  updatePerson(person: Person): Observable<{}> {
+    return this.http.put(this.restUrl() + 'UpdatePerson/' + person.id, PersonsMainService.convertToDTO(person));
+  }
+
+  private static convertToDTO(person: Person) {
+    return {
+      id: person.id,
+      login: person.login,
+      password: person.password,
+      firstName: person.firstName,
+      middleName: person.middleName,
+      lastName: person.lastName,
+      startDate: person.startDate,
+      currentGroup: person.currentGroup ? person.currentGroup.code : null,
+      baseSalaryPart: person.baseSalaryPart,
+    };
   }
 
   private restUrl(): string {

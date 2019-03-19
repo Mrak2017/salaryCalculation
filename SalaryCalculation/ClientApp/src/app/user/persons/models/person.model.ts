@@ -2,6 +2,8 @@ import { GroupTypeEnum } from "./group-type-enum";
 import { CheckUtils } from "../../../utils/check-utils";
 
 export class Person {
+  public static readonly NAME_MAX_LENGTH = 100;
+
   public id: number;
   public login: string;
   public password: string;
