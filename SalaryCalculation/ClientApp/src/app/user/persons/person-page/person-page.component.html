@@ -90,11 +90,14 @@
           {{item.name}}
         </mat-option>
       </mat-select>
-      <mat-icon aria-label="Очистить"
-                title="Очистить"
-                class="clickable-item"
-                (click)="selectedChief = null">clear
-      </mat-icon>
+      <button mat-icon-button
+              [disabled]="selectedChief === null">
+        <mat-icon aria-label="Очистить"
+                  title="Очистить"
+                  class="clickable-item"
+                  (click)="selectedChief = null">clear
+        </mat-icon>
+      </button>
     </div>
     <div class="button-container">
       <button type="button"
