@@ -70,6 +70,10 @@ export class PersonsMainService {
         )
   }
 
+  updateChief(personId: number, newChiefId: number): Observable<{}> {
+    return this.http.put(this.restUrl() + 'UpdateChief/' + personId + "/" + newChiefId, {});
+  }
+
   private getAllPersons(): Observable<PersonItem[]> {
     return this.http.get<PersonItem[]>(this.restUrl() + 'GetAllPersons')
         .pipe(
@@ -95,4 +99,5 @@ export class PersonsMainService {
   private restUrl(): string {
     return this.baseUrl + 'api/persons/';
   }
+
 }

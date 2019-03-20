@@ -58,7 +58,8 @@ namespace SalaryCalculation.Controllers
             }
 
             Person2Group[] groups = controller.GetAllGroups(person);
-            return new PersonDTO(person, groups);
+            Person chief = controller.GetPersonChief(person);
+            return new PersonDTO(person, groups, chief);
         }
 
         [HttpPut("[action]/{id}")]
@@ -85,13 +86,19 @@ namespace SalaryCalculation.Controllers
                 .ToArray();
         }
 
-        [HttpPut("[action]/{id}")]
-        public void UpdateChief(int id, [FromBody] int chiefId)
+        [HttpPut("[action]/{id}/{chiefId}")]
+        public void UpdateChief(int id, int chiefId)
         {
             Person person = controller.GetPersonById(id);
-            Person chief = controller.GetPersonById(chiefId);
-
-            controller.UpdateChief(person, chief);
+            if (chiefId > 0)
+            {
+                Person chief = controller.GetPersonById(chiefId);
+                controller.UpdateChief(person, chief);
+            }
+            else
+            {
+                controller.ClearChief(person);
+            }            
         }
 
         private PersonJournalDTO PreparePersonDTO(Person person)

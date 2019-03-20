@@ -143,11 +143,31 @@ namespace SalaryCalculation.Controllers
             OrganizationStructureItem personItem = GetStructureItem(person);
             OrganizationStructureItem chiefItem = GetStructureItem(chief);
 
-            personItem.Parent = chiefItem;
             personItem.ParentId = chiefItem.ID;
 
             dbContext.OrganizationStructure.Update(personItem);
             dbContext.SaveChanges();
+        }
+
+        public void ClearChief(Person person)
+        {
+            OrganizationStructureItem item = GetStructureItem(person);
+
+            item.ParentId = null;
+
+            dbContext.OrganizationStructure.Update(item);
+            dbContext.SaveChanges();
+        }
+
+        public Person GetPersonChief(Person person)
+        {
+            OrganizationStructureItem item = GetStructureItem(person);
+            if (item.Parent != null)
+            {
+                return GetLoadedStructureItem(item.Parent).Person;
+            }
+
+            return null;
         }
 
         public void RecalculateMaterializedPathOrgStructure()
@@ -164,7 +184,19 @@ namespace SalaryCalculation.Controllers
 
         private OrganizationStructureItem GetStructureItem(Person person)
         {
-            return dbContext.OrganizationStructure.Where(e => e.PersonId == person.ID).SingleOrDefault();
+            OrganizationStructureItem item = dbContext.OrganizationStructure
+                .Where(e => e.PersonId == person.ID)
+                .SingleOrDefault();
+            return GetLoadedStructureItem(item);
+        }
+
+        private OrganizationStructureItem GetLoadedStructureItem(OrganizationStructureItem item)
+        {
+            return dbContext.OrganizationStructure
+                .Where(e => (item != null) && (e.ID == item.ID))
+                .Include(e => e.Parent)
+                .Include(e => e.Person)
+                .SingleOrDefault();
         }
     }
 }

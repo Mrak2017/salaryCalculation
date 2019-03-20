@@ -28,12 +28,14 @@ namespace SalaryCalculation.RestControllers.DTO
 
         public decimal? BaseSalaryPart { get; set; }
 
+        public PersonDTO CurrentChief { get; set; }
+
         public PersonDTO()
         {
 
         }
 
-        public PersonDTO(Person person, Person2Group[] groups)
+        public PersonDTO(Person person, Person2Group[] groups, Person chief = null)
         {
             Id = person.ID;
             Login = person.Login;
@@ -53,6 +55,11 @@ namespace SalaryCalculation.RestControllers.DTO
             }
 
             Groups = groups.Select(group => new Person2GroupDTO(group)).ToArray();
+
+            if (chief != null)
+            {
+                CurrentChief = new PersonDTO(chief, new Person2Group[0]);
+            }
         }
     }
 }
