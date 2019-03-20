@@ -1,0 +1,24 @@
+form,
+.chief-chooser {
+  margin: 30px;
+}
+
+form,
+mat-form-field,
+.chief-chooser {
+  width: 400px;
+}
+
+.button-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.selected-chief-container {
+  display: flex;
+}
+
+.selected-chief-container mat-icon {
+  padding-left: 10px;
+}

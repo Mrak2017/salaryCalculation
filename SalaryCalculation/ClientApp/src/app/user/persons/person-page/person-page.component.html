@@ -1,0 +1,110 @@
+<form [formGroup]="personForm" (ngSubmit)="onSubmit()">
+  <div>
+
+    <div>Логин: {{login$ | async}}</div>
+
+    <div>Группа сотрудника: {{currentGroup$ | async}}</div>
+
+    <mat-divider></mat-divider>
+
+    <mat-form-field>
+      <input matInput placeholder="Пароль*" formControlName="password">
+      <mat-error *ngIf="personForm.controls.password.hasError('required')">
+        Это обязательное поле
+      </mat-error>
+      <mat-error *ngIf="personForm.controls.password.hasError('maxLength')">
+        Это поле должно быть не больше {{NAME_MAX_LENGTH}} символов
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Фамилия*" formControlName="lastName">
+      <mat-error *ngIf="personForm.controls.lastName.hasError('required')">
+        Это обязательное поле
+      </mat-error>
+      <mat-error *ngIf="personForm.controls.lastName.hasError('maxLength')">
+        Это поле должно быть не больше {{NAME_MAX_LENGTH}} символов
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Имя*" formControlName="firstName">
+      <mat-error *ngIf="personForm.controls.firstName.hasError('required')">
+        Это обязательное поле
+      </mat-error>
+      <mat-error *ngIf="personForm.controls.firstName.hasError('maxLength')">
+        Это поле должно быть не больше {{NAME_MAX_LENGTH}} символов
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Отчество" formControlName="middleName">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput
+             [matDatepicker]="startDatePicker"
+             formControlName="startDate"
+             placeholder="Дата устройства на работу*">
+      <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #startDatePicker></mat-datepicker>
+      <mat-error *ngIf="personForm.controls.startDate.hasError('required')">
+        Это обязательное поле
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput
+             [matDatepicker]="endDatePicker"
+             formControlName="endDate"
+             placeholder="Дата увольнения">
+      <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #endDatePicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput
+             type="number"
+             placeholder="Базовая ставка з/п"
+             formControlName="baseSalaryPart">
+    </mat-form-field>
+
+  </div>
+  <div class="button-container">
+    <button mat-button
+            [disabled]="!personForm.valid">Сохранить
+    </button>
+  </div>
+
+</form>
+
+<mat-divider></mat-divider>
+
+<div class="chief-chooser">
+  <div *ngIf="(chiefs$ | async)?.length > 0; else noChiefs">
+    <div class="selected-chief-container">
+      <mat-select placeholder="Руководитель"
+                  [(value)]="selectedChief">
+        <mat-option *ngFor="let item of (chiefs$ | async)"
+                    [value]="item">
+          {{item.name}}
+        </mat-option>
+      </mat-select>
+      <mat-icon aria-label="Очистить"
+                title="Очистить"
+                class="clickable-item"
+                (click)="selectedChief = null">clear
+      </mat-icon>
+    </div>
+    <div class="button-container">
+      <button type="button"
+              mat-button
+              [disabled]="selectedChief?.id === (currentChiefId$ | async)"
+              (click)="updateChief()">Изменить руководителя
+      </button>
+    </div>
+  </div>
+  <ng-template #noChiefs>
+    <p>Нет доступных руководителей для выбора</p>
+  </ng-template>
+</div>
