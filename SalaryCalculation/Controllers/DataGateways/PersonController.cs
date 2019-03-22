@@ -273,7 +273,7 @@ namespace SalaryCalculation.Controllers
 
                 if (chiefItem.MaterializedPath != null)
                 {
-                    item.MaterializedPath = chiefItem.MaterializedPath;
+                    item.MaterializedPath = new List<string>(chiefItem.MaterializedPath);
                 }
 
                 item.MaterializedPath.Add(Convert.ToString(chiefItem.Person.ID));
