@@ -80,7 +80,7 @@
 
 <mat-divider></mat-divider>
 
-<div class="chief-chooser">
+<div class="chief-chooser" *ngIf="hasCurrentGroup$ | async; else noGroup">
   <div *ngIf="(chiefs$ | async)?.length > 0; else noChiefs">
     <div class="selected-chief-container">
       <mat-select placeholder="Руководитель"
@@ -91,7 +91,8 @@
         </mat-option>
       </mat-select>
       <button mat-icon-button
-              [disabled]="selectedChief === null">
+              class="clear-button"
+              [disabled]="!selectedChief">
         <mat-icon aria-label="Очистить"
                   title="Очистить"
                   class="clickable-item"
@@ -102,12 +103,18 @@
     <div class="button-container">
       <button type="button"
               mat-button
-              [disabled]="selectedChief?.id === (currentChiefId$ | async)"
+              [disabled]="selectedChief && selectedChief.id === (currentChiefId$ | async)"
               (click)="updateChief()">Изменить руководителя
       </button>
     </div>
   </div>
   <ng-template #noChiefs>
-    <p>Нет доступных руководителей для выбора</p>
+    <p>Нет доступных руководителей для выбора.</p>
   </ng-template>
 </div>
+<ng-template #noGroup>
+  <p>Невозможно назначить руководителя, т.к. у сотрудника нет группы в данный момент.</p>
+</ng-template>
+
+<mat-divider></mat-divider>
+<p>TODO: управление группами</p>

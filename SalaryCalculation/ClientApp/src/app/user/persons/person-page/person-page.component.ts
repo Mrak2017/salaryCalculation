@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { PersonPageService } from "./person-page.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { combineLatest, Observable } from "rxjs";
-import { filter, map, shareReplay, take, tap, withLatestFrom } from "rxjs/internal/operators";
+import { filter, map, shareReplay, take, withLatestFrom } from "rxjs/internal/operators";
 import { Subscriber } from "../../../shared/subscriber";
 import { Person } from "../models/person.model";
 import { ComboBoxItemDTO } from "../../../shared/models/combobox-item-dto";
@@ -20,6 +20,7 @@ export class PersonPageComponent extends Subscriber implements OnInit {
   personForm: FormGroup;
   login$: Observable<string>;
   currentGroup$: Observable<string>;
+  hasCurrentGroup$: Observable<boolean>;
   currentChiefId$: Observable<number>;
 
   chiefs$: Observable<ComboBoxItemDTO[]>;
@@ -52,6 +53,7 @@ export class PersonPageComponent extends Subscriber implements OnInit {
         filter(p => CheckUtils.isExists(p.currentGroup)),
         map(p => p.currentGroup.name),
     );
+    this.hasCurrentGroup$ = this.currentGroup$.pipe(map(CheckUtils.isExists));
     this.currentChiefId$ = this.service.person$.pipe(
         map(p => CheckUtils.isExists(p.currentChief) ? p.currentChief.id : null),
         shareReplay(1),

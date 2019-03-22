@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SalaryCalculation.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SalaryCalculation.Controllers
@@ -15,6 +16,7 @@ namespace SalaryCalculation.Controllers
             this.dbContext = dbContext;
         }
 
+        /** Получить список непосредственных подчиненных (первого уровня)*/
         public Person[] GetFirstLevelSubordinates(Person person)
         {
             return dbContext.OrganizationStructure
@@ -23,14 +25,16 @@ namespace SalaryCalculation.Controllers
                 .ToArray();
         }
 
+        /** Получить список всех подчиненных*/
         public Person[] GetAllSubordinates(Person person)
         {
             return dbContext.OrganizationStructure
-                .Where(o => o.MaterializedPath.Contains(Convert.ToString(person.ID)))
+                .Where(o => o.MaterializedPath != null && o.MaterializedPath.Contains(Convert.ToString(person.ID)))
                 .Select(o => o.Person)
                 .ToArray();
         }
 
+        /** Получить список сотрудников, доступных для выбора в качестве руководителя*/
         public Person[] GetPossibleChiefs()
         {
             /** выборка с использованием Join*/
@@ -65,6 +69,7 @@ namespace SalaryCalculation.Controllers
             */
         }
 
+        /** Получить тип группы сотрудника на определенную дату*/
         public GroupType? GetPersonGroupOnDate(Person person, DateTime onDate)
         {
             Person2Group p2g = dbContext.Person2Groups
@@ -84,11 +89,13 @@ namespace SalaryCalculation.Controllers
             return null;
         }
 
+        /** Получить всех сотрудников*/
         public Person[] GetAllPersons()
         {
             return dbContext.Persons.ToArray();
         }
 
+        /** Создать нового сотрудника*/
         public void AddPerson(Person person, Person2Group p2g)
         {
             Person existed = FindPersonByLogin(person.Login);
@@ -112,11 +119,13 @@ namespace SalaryCalculation.Controllers
             dbContext.SaveChanges();
         }
 
+        /** Получить сотрудника по ID*/
         public Person GetPersonById(int id)
         {
             return dbContext.Persons.Where(e => e.ID == id).SingleOrDefault();
         }
 
+        /** Получить все группы сотрудника*/
         public Person2Group[] GetAllGroups(Person person)
         {
             return dbContext.Person2Groups
@@ -125,6 +134,7 @@ namespace SalaryCalculation.Controllers
                 .ToArray();
         }
 
+        /** Изменить информацию о сотруднике*/
         public void UpdatePerson(Person person)
         {
             Person existed = dbContext.Persons
@@ -138,27 +148,46 @@ namespace SalaryCalculation.Controllers
             dbContext.SaveChanges();
         }
 
+        /** Изменить руководителя для сотрудника*/
         public void UpdateChief(Person person, Person chief)
         {
             OrganizationStructureItem personItem = GetStructureItem(person);
             OrganizationStructureItem chiefItem = GetStructureItem(chief);
 
+            CheckChiefBeforeSave(personItem, chiefItem);
+
             personItem.ParentId = chiefItem.ID;
+
+            personItem.MaterializedPath = new List<string>();
+
+            if (chiefItem.MaterializedPath != null)
+            {
+                personItem.MaterializedPath = new List<string>(chiefItem.MaterializedPath);
+            }
+            
+            personItem.MaterializedPath.Add(Convert.ToString(chiefItem.Person.ID));
 
             dbContext.OrganizationStructure.Update(personItem);
             dbContext.SaveChanges();
-        }
 
+            RecalculateMaterializedPathForFirstLevelSubordinates(personItem);
+        }
+        
+        /** Убрать руководителя у сотрудника*/
         public void ClearChief(Person person)
         {
             OrganizationStructureItem item = GetStructureItem(person);
 
             item.ParentId = null;
-
+            item.MaterializedPath = null;
+            
             dbContext.OrganizationStructure.Update(item);
             dbContext.SaveChanges();
+
+            RecalculateMaterializedPathForFirstLevelSubordinates(item);
         }
 
+        /** Получить текущего руководителя для сотрудника*/
         public Person GetPersonChief(Person person)
         {
             OrganizationStructureItem item = GetStructureItem(person);
@@ -170,11 +199,13 @@ namespace SalaryCalculation.Controllers
             return null;
         }
 
+        /** Пересчитать материализованный путь, для всех записей в таблице орг структуры*/
         public void RecalculateMaterializedPathOrgStructure()
         {
             /// https://github.com/aspnet/EntityFrameworkCore/issues/3241#issuecomment-411928305
         }
 
+        /** Найти сотрудника по логину*/
         private Person FindPersonByLogin(string login)
         {
             return dbContext.Persons
@@ -182,6 +213,7 @@ namespace SalaryCalculation.Controllers
                 .SingleOrDefault();
         }
 
+        /** Получает объект орг структуры по сотруднику, с подгруженным значениями Lazy-loaded полей*/
         private OrganizationStructureItem GetStructureItem(Person person)
         {
             OrganizationStructureItem item = dbContext.OrganizationStructure
@@ -190,6 +222,7 @@ namespace SalaryCalculation.Controllers
             return GetLoadedStructureItem(item);
         }
 
+        /** Подгружает Lazy-loaded поля в объект орг структуры*/
         private OrganizationStructureItem GetLoadedStructureItem(OrganizationStructureItem item)
         {
             return dbContext.OrganizationStructure
@@ -197,6 +230,59 @@ namespace SalaryCalculation.Controllers
                 .Include(e => e.Parent)
                 .Include(e => e.Person)
                 .SingleOrDefault();
+        }
+
+        /** Проверка валидности изменения руководителя для сотрудника*/
+        private void CheckChiefBeforeSave(OrganizationStructureItem personItem, OrganizationStructureItem chiefItem)
+        {
+            string personLogin = personItem.Person.Login;
+            string chiefLogin = chiefItem.Person.Login;
+
+            if (chiefItem.MaterializedPath != null 
+                && chiefItem.MaterializedPath.Contains(Convert.ToString(personItem.Person.ID)))
+            {
+                throw new Exception("Невозможно назначить сотруднику '" + personLogin
+                    + "' руководителя '" + chiefLogin
+                    + "', т.к. сотрудник указан среди иерархии руководителей, выбранного руководителя");
+            }
+
+            GroupType? personCurrentGroup = GetPersonGroupOnDate(personItem.Person, DateTime.Today);
+            if (personCurrentGroup == null)
+            {
+                throw new Exception("Невозможно назначить руководителя для сотрудника без должности: '" + personLogin + "'");
+            }
+
+            GroupType? chiefCurrentGroup = GetPersonGroupOnDate(chiefItem.Person, DateTime.Today);
+            if (chiefCurrentGroup == null 
+                || (!chiefCurrentGroup.Equals(GroupType.Manager) && !chiefCurrentGroup.Equals(GroupType.Salesman)))
+            {
+                throw new Exception("Невозможно назначить руководителя '" + chiefLogin 
+                    + "', т.к. его текущая должность не 'Менеджер' и не 'Продажник'");
+            }
+        }
+
+        /** Пересчитать материализованный путь, для непосредственных подчиненных (первого уровня)*/
+        private void RecalculateMaterializedPathForFirstLevelSubordinates(OrganizationStructureItem chiefItem)
+        {
+            Person[] firstLevel = GetFirstLevelSubordinates(chiefItem.Person);
+            foreach(var sub in firstLevel)
+            {
+                OrganizationStructureItem item = GetStructureItem(sub);
+
+                item.MaterializedPath = new List<string>();
+
+                if (chiefItem.MaterializedPath != null)
+                {
+                    item.MaterializedPath = chiefItem.MaterializedPath;
+                }
+
+                item.MaterializedPath.Add(Convert.ToString(chiefItem.Person.ID));
+
+                dbContext.OrganizationStructure.Update(item);
+                dbContext.SaveChanges();
+
+                RecalculateMaterializedPathForFirstLevelSubordinates(item);
+            }
         }
     }
 }

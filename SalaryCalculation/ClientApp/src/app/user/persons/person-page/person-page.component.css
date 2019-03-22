@@ -19,6 +19,10 @@ mat-form-field,
   display: flex;
 }
 
-.selected-chief-container mat-icon {
-  padding-left: 10px;
+.clear-button {
+  height: 20px;
+  width: 20px;
+  line-height: 20px;
+  font-size: 20px;
+  margin-left: 10px;
 }
