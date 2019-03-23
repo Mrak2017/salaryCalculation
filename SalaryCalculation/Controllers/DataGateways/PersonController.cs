@@ -264,8 +264,14 @@ namespace SalaryCalculation.Controllers
         /** Пересчитать материализованный путь, для непосредственных подчиненных (первого уровня)*/
         private void RecalculateMaterializedPathForFirstLevelSubordinates(OrganizationStructureItem chiefItem)
         {
-            Person[] firstLevel = GetFirstLevelSubordinates(chiefItem.Person);
-            foreach(var sub in firstLevel)
+            Person[] firstLevel = dbContext.OrganizationStructure
+                .Where(e => (chiefItem != null) && (e.ParentId == chiefItem.PersonId))
+                .Include(e => e.Parent)
+                .Include(e => e.Person)
+                .Select(e => e.Person)
+                .ToArray();
+
+            foreach (var sub in firstLevel)
             {
                 OrganizationStructureItem item = GetStructureItem(sub);
 
