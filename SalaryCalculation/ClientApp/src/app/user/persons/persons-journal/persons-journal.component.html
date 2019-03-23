@@ -28,12 +28,12 @@
 
     <ng-container matColumnDef="baseSalaryPart">
       <th mat-header-cell *matHeaderCellDef> Базовая ставка з/п</th>
-      <td mat-cell *matCellDef="let element"> {{element.baseSalaryPart}}</td>
+      <td mat-cell *matCellDef="let element" class="currency-ru"> {{element.baseSalaryPart}}</td>
     </ng-container>
 
     <ng-container matColumnDef="currentSalary">
       <th mat-header-cell *matHeaderCellDef> Уровень з/п в данный момент</th>
-      <td mat-cell *matCellDef="let element"> {{element.currentSalary}}</td>
+      <td mat-cell *matCellDef="let element" class="currency-ru"> {{element.currentSalary}}</td>
     </ng-container>
 
     <ng-container matColumnDef="editColumn">

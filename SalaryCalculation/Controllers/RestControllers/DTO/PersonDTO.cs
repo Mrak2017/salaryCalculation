@@ -30,12 +30,14 @@ namespace SalaryCalculation.RestControllers.DTO
 
         public PersonDTO CurrentChief { get; set; }
 
+        public decimal? CurrentSalary { get; set; }
+
         public PersonDTO()
         {
 
         }
 
-        public PersonDTO(Person person, Person2Group[] groups, Person chief = null)
+        public PersonDTO(Person person, Person2Group[] groups, Person chief = null, decimal? currentSalary = null)
         {
             Id = person.ID;
             Login = person.Login;
@@ -45,6 +47,7 @@ namespace SalaryCalculation.RestControllers.DTO
             LastName = person.LastName;
             StartDate = person.StartDate;
             BaseSalaryPart = person.BaseSalaryPart;
+            CurrentSalary = currentSalary;
 
             Person2Group currentGroup = Array.Find(groups, group => 
                 group.PeriodStart <= DateTime.Today 

@@ -1,6 +1,10 @@
-<div>Логин: {{login$ | async}}</div>
+<div class="main-fields">
+  <div>Логин: {{login$ | async}}</div>
+  <div>Группа сотрудника: {{currentGroup$ | async}}</div>
+  <div class="currency-ru">Текущая зар. плата: {{currentSalary$ | async}}</div>
+</div>
 
-<div>Группа сотрудника: {{currentGroup$ | async}}</div>
+<mat-divider></mat-divider>
 
 <mat-tab-group>
   <mat-tab label="Основное">

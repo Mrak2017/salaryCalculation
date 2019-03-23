@@ -16,6 +16,7 @@ export class PersonPageComponent extends Subscriber implements OnInit {
 
   login$: Observable<string>;
   currentGroup$: Observable<string>;
+  currentSalary$: Observable<number>;
 
   constructor(private service: PersonPageService) {
     super();
@@ -27,6 +28,7 @@ export class PersonPageComponent extends Subscriber implements OnInit {
         filter(p => CheckUtils.isExists(p.currentGroup)),
         map(p => p.currentGroup.name),
     );
+    this.currentSalary$ = this.service.person$.pipe(map(p => p.currentSalary))
   }
 
 }

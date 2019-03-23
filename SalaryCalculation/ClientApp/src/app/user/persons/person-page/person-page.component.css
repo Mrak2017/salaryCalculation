@@ -1,3 +1,9 @@
 mat-card {
   margin: 5px;
 }
+.main-fields {
+  margin: 20px;
+}
+.main-fields div{
+  margin: 5px 0;
+}

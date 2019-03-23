@@ -14,6 +14,7 @@ export class Person {
   public endDate: Date;
   public currentGroup: GroupTypeEnum;
   public baseSalaryPart: number;
+  public currentSalary: number;
   public currentChief: Person;
 
   constructor(data: any) {
@@ -30,6 +31,7 @@ export class Person {
         this.currentGroup = GroupTypeEnum.valueOf(data.currentGroup);
       }
       this.baseSalaryPart = data.baseSalaryPart;
+      this.currentSalary = data.currentSalary;
       if(CheckUtils.isExists(data.currentChief)) {
         this.currentChief = new Person(data.currentChief);
       }

@@ -59,7 +59,8 @@ namespace SalaryCalculation.Controllers
 
             Person2Group[] groups = controller.GetAllGroups(person);
             Person chief = controller.GetPersonChief(person);
-            return new PersonDTO(person, groups, chief);
+            decimal currentSalary = calculator.CalculateSalary(person, DateTime.Today);
+            return new PersonDTO(person, groups, chief, currentSalary);
         }
 
         [HttpPut("[action]/{id}")]

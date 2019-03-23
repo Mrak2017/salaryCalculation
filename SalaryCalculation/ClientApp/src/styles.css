@@ -30,3 +30,7 @@ body {
 .icon-column {
   width: 50px;
 }
+
+.currency-ru::after {
+  content: " ₽";
+}
