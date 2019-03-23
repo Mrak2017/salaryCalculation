@@ -1,9 +1,19 @@
+:host {
+  height: 100%;
+}
+
+mat-tab-group {
+  height: calc(100% - 125px);
+}
+
 mat-card {
   margin: 5px;
 }
+
 .main-fields {
-  margin: 20px;
+  padding: 20px;
 }
+
 .main-fields div{
-  margin: 5px 0;
+  padding: 5px 0;
 }

@@ -54,4 +54,16 @@ export class PersonPageService {
         .then((personId) => this.service.updateChief(personId, newChiefId).toPromise())
         .then(() => this.refreshSubj.next());
   }
+
+  addGroup() {
+
+  }
+
+  editGroup(id: number) {
+
+  }
+
+  deleteGroup(id: number, groupType: string, periodStart: Date, periodEnd: Date) {
+    
+  }
 }

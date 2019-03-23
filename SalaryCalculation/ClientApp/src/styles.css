@@ -4,6 +4,8 @@
 
 body {
   height: 100vh;
+  min-width: 500px;
+  min-height: 500px;
 }
 
 .journal-form {
@@ -17,10 +19,9 @@ body {
 }
 
 .journal-form-add-button {
-  position: absolute !important;
-  align-self: flex-end;
-  bottom: 30px;
   right: 30px;
+  bottom: 30px;
+  position: fixed !important;
 }
 
 .clickable-item {

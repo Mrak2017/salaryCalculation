@@ -1,5 +1,6 @@
 import { GroupTypeEnum } from "./group-type-enum";
 import { CheckUtils } from "../../../utils/check-utils";
+import { PersonGroup } from "./person-group.model";
 
 export class Person {
   public static readonly NAME_MAX_LENGTH = 100;
@@ -16,6 +17,7 @@ export class Person {
   public baseSalaryPart: number;
   public currentSalary: number;
   public currentChief: Person;
+  public groups: PersonGroup[];
 
   constructor(data: any) {
     if (CheckUtils.isExists(data)) {
@@ -34,6 +36,10 @@ export class Person {
       this.currentSalary = data.currentSalary;
       if(CheckUtils.isExists(data.currentChief)) {
         this.currentChief = new Person(data.currentChief);
+      }
+
+      if (CheckUtils.isExists(data.groups)) {
+        this.groups = data.groups.map(val => new PersonGroup(val));
       }
     }
   }
