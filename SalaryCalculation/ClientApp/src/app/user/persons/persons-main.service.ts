@@ -8,6 +8,7 @@ import { CheckUtils } from "../../utils/check-utils";
 import { PersonItem } from "./models/person-item.model";
 import { Person } from "./models/person.model";
 import { ComboBoxItemDTO } from "../../shared/models/combobox-item-dto";
+import { DateUtils } from "../../utils/date-utils";
 
 @Injectable()
 export class PersonsMainService {
@@ -63,7 +64,7 @@ export class PersonsMainService {
     return this.http.put(this.restUrl() + 'UpdatePerson/' + person.id, PersonsMainService.convertToDTO(person));
   }
 
-  getPossibleChiefs():Observable<ComboBoxItemDTO[]> {
+  getPossibleChiefs(): Observable<ComboBoxItemDTO[]> {
     return this.http.get<any[]>(this.restUrl() + 'GetPossibleChiefs')
         .pipe(
             map(data => data.map(value => new ComboBoxItemDTO(value.id, value.name))),
@@ -89,8 +90,8 @@ export class PersonsMainService {
       firstName: person.firstName,
       middleName: person.middleName,
       lastName: person.lastName,
-      startDate: person.startDate,
-      endDate: CheckUtils.isExists(person.endDate) ? person.endDate : null,
+      startDate: DateUtils.FormatWithoutTimeZone(person.startDate),
+      endDate: CheckUtils.isExists(person.endDate) ? DateUtils.FormatWithoutTimeZone(person.endDate) : null,
       currentGroup: CheckUtils.isExists(person.currentGroup) ? person.currentGroup.code : null,
       baseSalaryPart: person.baseSalaryPart,
     };

@@ -8,6 +8,9 @@ import { ConfigurationsJournalComponent } from './configuration/configurations-j
 import { ConfigurationsMainService } from "./configuration/configurations-main.service";
 import { EditConfigurationDialogComponent } from './configuration/edit-configuration-dialog/edit-configuration-dialog.component';
 import { PersonPageComponent } from './persons/person-page/person-page.component';
+import { PersonMainTabComponent } from './persons/person-page/tabs/person-main-tab/person-main-tab.component';
+import { PersonGroupTabComponent } from './persons/person-page/tabs/person-group-tab/person-group-tab.component';
+import { PersonOrgStructureTabComponent } from './persons/person-page/tabs/person-org-structure-tab/person-org-structure-tab.component';
 
 @NgModule({
   imports: [
@@ -20,6 +23,9 @@ import { PersonPageComponent } from './persons/person-page/person-page.component
     ConfigurationsJournalComponent,
     EditConfigurationDialogComponent,
     PersonPageComponent,
+    PersonMainTabComponent,
+    PersonGroupTabComponent,
+    PersonOrgStructureTabComponent,
   ],
   exports: [
     PersonsJournalComponent,

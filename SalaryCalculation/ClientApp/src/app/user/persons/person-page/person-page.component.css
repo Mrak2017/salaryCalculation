@@ -1,28 +1,3 @@
-form,
-.chief-chooser {
-  margin: 30px;
-}
-
-form,
-mat-form-field,
-.chief-chooser {
-  width: 400px;
-}
-
-.button-container {
-  margin-top: 20px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.selected-chief-container {
-  display: flex;
-}
-
-.clear-button {
-  height: 20px;
-  width: 20px;
-  line-height: 20px;
-  font-size: 20px;
-  margin-left: 10px;
+mat-card {
+  margin: 5px;
 }

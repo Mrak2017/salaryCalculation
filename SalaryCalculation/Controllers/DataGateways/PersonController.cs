@@ -130,7 +130,7 @@ namespace SalaryCalculation.Controllers
         {
             return dbContext.Person2Groups
                 .Where(g => g.Person == person && g.Active == true)
-                .OrderByDescending(g => g.ID)
+                .OrderBy(g => g.PeriodStart)
                 .ToArray();
         }
 

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import {
   MatButtonModule,
+  MatCardModule,
   MatDatepickerModule,
   MatDialogModule,
   MatIconModule,
@@ -10,6 +11,7 @@ import {
   MatSelectModule,
   MatSidenavModule,
   MatTableModule,
+  MatTabsModule,
   MatToolbarModule,
 } from "@angular/material";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -31,6 +33,8 @@ import { RouterModule } from "@angular/router";
     MatNativeDateModule,
     MatSelectModule,
     RouterModule,
+    MatTabsModule,
+    MatCardModule,
   ],
   exports: [
     MatToolbarModule,
@@ -47,6 +51,8 @@ import { RouterModule } from "@angular/router";
     MatSelectModule,
     SimpleYesNoDialogComponent,
     RouterModule,
+    MatTabsModule,
+    MatCardModule,
   ],
   declarations: [
     SimpleYesNoDialogComponent,

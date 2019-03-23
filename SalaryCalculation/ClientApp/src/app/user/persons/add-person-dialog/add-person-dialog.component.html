@@ -8,18 +8,15 @@
       <mat-error *ngIf="personForm.controls.login.hasError('required')">
         Это обязательное поле
       </mat-error>
-      <mat-error *ngIf="personForm.controls.login.hasError('maxLength')">
-        Это поле должно быть не больше {{NAME_MAX_LENGTH}} символов
+      <mat-error *ngIf="personForm.controls.login.hasError('maxlength')">
+        Это поле должно быть не больше {{nameMaxLength}} символов
       </mat-error>
     </mat-form-field>
 
     <mat-form-field>
       <input matInput placeholder="Пароль*" formControlName="password">
-      <mat-error *ngIf="personForm.controls.password.hasError('required')">
-        Это обязательное поле
-      </mat-error>
-      <mat-error *ngIf="personForm.controls.password.hasError('maxLength')">
-        Это поле должно быть не больше {{NAME_MAX_LENGTH}} символов
+      <mat-error *ngIf="personForm.controls.password.hasError('maxlength')">
+        Это поле должно быть не больше {{nameMaxLength}} символов
       </mat-error>
     </mat-form-field>
 
@@ -28,8 +25,8 @@
       <mat-error *ngIf="personForm.controls.lastName.hasError('required')">
         Это обязательное поле
       </mat-error>
-      <mat-error *ngIf="personForm.controls.lastName.hasError('maxLength')">
-        Это поле должно быть не больше {{NAME_MAX_LENGTH}} символов
+      <mat-error *ngIf="personForm.controls.lastName.hasError('maxlength')">
+        Это поле должно быть не больше {{nameMaxLength}} символов
       </mat-error>
     </mat-form-field>
 
@@ -38,8 +35,8 @@
       <mat-error *ngIf="personForm.controls.firstName.hasError('required')">
         Это обязательное поле
       </mat-error>
-      <mat-error *ngIf="personForm.controls.firstName.hasError('maxLength')">
-        Это поле должно быть не больше {{NAME_MAX_LENGTH}} символов
+      <mat-error *ngIf="personForm.controls.firstName.hasError('maxlength')">
+        Это поле должно быть не больше {{nameMaxLength}} символов
       </mat-error>
     </mat-form-field>
 
@@ -80,10 +77,10 @@
   </div>
   <div class="button-container">
     <button mat-button
-            type="submit"
             [disabled]="!personForm.valid">Сохранить
     </button>
     <button mat-button
+            type="button"
             (click)="onCancelClick()">Закрыть
     </button>
   </div>

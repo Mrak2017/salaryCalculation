@@ -22,6 +22,7 @@
     "@angular/platform-browser-dynamic": "7.2.8",
     "@angular/router": "7.2.8",
     "core-js": "2.6.5",
+    "moment": "2.24.0",
     "rxjs": "6.4.0",
     "ts-jenum": "1.1.5",
     "tslib": "1.9.3",
