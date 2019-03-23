@@ -9,6 +9,9 @@ import { PersonItem } from "./models/person-item.model";
 import { Person } from "./models/person.model";
 import { ComboBoxItemDTO } from "../../shared/models/combobox-item-dto";
 import { DateUtils } from "../../utils/date-utils";
+import { PersonGroup } from "./models/person-group.model";
+import { EditPersonGroupDialogComponent } from "./edit-person-group-dialog/edit-person-group-dialog.component";
+import { SimpleYesNoDialogComponent } from "../../shared/common-dialogs/simple-yes-no-dialog/simple-yes-no-dialog.component";
 
 @Injectable()
 export class PersonsMainService {
@@ -31,10 +34,6 @@ export class PersonsMainService {
 
   refresh() {
     this.refreshSubj.next();
-  }
-
-  deletePerson(id: number): void {
-    //this.http.delete(this.restUrl() + id);
   }
 
   addPerson() {
@@ -75,11 +74,75 @@ export class PersonsMainService {
     return this.http.put(this.restUrl() + 'UpdateChief/' + personId + "/" + newChiefId, {});
   }
 
+  addGroup(personId: number): Promise<{}> {
+    return this.editGroupDialog(undefined, 'Добавить группу',
+        dto => this.http.post(this.restUrl() + personId + '/AddGroup', dto));
+  }
+
+  updateGroup(id: number): Promise<{}> {
+    return this.http.get<PersonGroup>(this.restUrl() + 'GetGroup/' + id)
+        .pipe(map(value => new PersonGroup(value)))
+        .toPromise()
+        .then(group => this.editGroupDialog(group, 'Изменить группу',
+            dto => this.http.put(this.restUrl() + 'UpdateGroup', dto)));
+  }
+
+  deleteGroup(group: PersonGroup): Promise<void> {
+    const periodEndPart = CheckUtils.isExists(group.periodEnd) ? '" по "' + DateUtils.formatDateOnly(group.periodEnd) : '';
+    const message = 'Вы уверены, что хотите удалить группу "' + group.group.name
+        + '" за период с "' + DateUtils.formatDateOnly(group.periodStart)
+        + periodEndPart + '" ?';
+
+    const dialogRef = this.dialog.open(SimpleYesNoDialogComponent, {
+      width: '400px',
+      disableClose: true,
+      data: {
+        message: message,
+      },
+    });
+
+    return dialogRef.afterClosed()
+        .pipe(
+            filter(CheckUtils.isExists),
+            switchMap(() => this.deleteGroupInternal(group.id)),
+            take(1))
+        .toPromise();
+  }
+
   private getAllPersons(): Observable<PersonItem[]> {
     return this.http.get<PersonItem[]>(this.restUrl() + 'GetAllPersons')
         .pipe(
             map(data => data.map(value => new PersonItem(value))),
         )
+  }
+
+  private editGroupDialog(group: PersonGroup = new PersonGroup(), title: string, callback: Function): Promise<{}> {
+    const dialogRef = this.dialog.open(EditPersonGroupDialogComponent, {
+      width: '400px',
+      disableClose: true,
+      data: {
+        group: group,
+        title: title,
+      },
+    });
+
+    return dialogRef.afterClosed()
+        .pipe(
+            filter(CheckUtils.isExists),
+            map((result: PersonGroup) => (
+                {
+                  id: result.id,
+                  periodStart: DateUtils.formatWithoutTimeZone(result.periodStart),
+                  periodEnd: CheckUtils.isExists(result.periodEnd) ? DateUtils.formatWithoutTimeZone(result.periodEnd) : null,
+                  groupType: CheckUtils.isExists(result.group) ? result.group.code : null,
+                })),
+            switchMap(dto => callback(dto)),
+            take(1))
+        .toPromise();
+  }
+
+  private deleteGroupInternal(id: number): Observable<void> {
+    return this.http.delete<void>(this.restUrl() + 'DeleteGroup/' + id);
   }
 
   private static convertToDTO(person: Person) {
@@ -90,8 +153,8 @@ export class PersonsMainService {
       firstName: person.firstName,
       middleName: person.middleName,
       lastName: person.lastName,
-      startDate: DateUtils.FormatWithoutTimeZone(person.startDate),
-      endDate: CheckUtils.isExists(person.endDate) ? DateUtils.FormatWithoutTimeZone(person.endDate) : null,
+      startDate: DateUtils.formatWithoutTimeZone(person.startDate),
+      endDate: CheckUtils.isExists(person.endDate) ? DateUtils.formatWithoutTimeZone(person.endDate) : null,
       currentGroup: CheckUtils.isExists(person.currentGroup) ? person.currentGroup.code : null,
       baseSalaryPart: person.baseSalaryPart,
     };

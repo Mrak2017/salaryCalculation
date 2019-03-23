@@ -102,6 +102,63 @@ namespace SalaryCalculation.Controllers
             }            
         }
 
+        [HttpPost("{id}/[action]")]
+        public void AddGroup(int id, [FromBody] Person2GroupDTO dto)
+        {
+            Person person = controller.GetPersonById(id);
+            if (person == null)
+            {
+                throw new Exception("Не удалось найти сотрудника с id '" + id + "'");
+            }
+
+            Person2Group p2g = new Person2Group
+            {
+                PeriodStart = dto.PeriodStart,
+                PeriodEnd = dto.PeriodEnd,
+                GroupType = (GroupType)Enum.Parse(typeof(GroupType), dto.GroupType)
+            };
+
+            controller.AddGroup(person, p2g);
+        }
+
+        [HttpGet("[action]/{id}")]
+        public Person2GroupDTO GetGroup(int id)
+        {
+            Person2Group p2g = controller.GetPersonGroupById(id);
+            if (p2g == null)
+            {
+                throw new Exception("Группа с id: " + id + " не найдена");
+            }
+            return new Person2GroupDTO(p2g);
+        }
+
+        [HttpPut("[action]")]
+        public void UpdateGroup([FromBody] Person2GroupDTO dto)
+        {
+            Person2Group p2g = controller.GetPersonGroupById(dto.Id);
+            if (p2g == null)
+            {
+                throw new Exception("Не удалось найти группу сотрудника с id '" + dto.Id + "'");
+            }
+
+            p2g.PeriodStart = dto.PeriodStart;
+            p2g.PeriodEnd = dto.PeriodEnd;
+            p2g.GroupType = (GroupType)Enum.Parse(typeof(GroupType), dto.GroupType);
+
+            controller.UpdateGroup(p2g);
+        }
+
+        [HttpDelete("[action]/{id}")]
+        public void DeleteGroup(int id)
+        {
+            Person2Group p2g = controller.GetPersonGroupById(id);
+            if (p2g == null)
+            {
+                throw new Exception("Группа с id:" + id + " не найдена");
+            }
+            controller.DeleteGroup(p2g);
+        }
+
         private PersonJournalDTO PreparePersonDTO(Person person)
         {
             GroupType? group = controller.GetPersonGroupOnDate(person, DateTime.Today);

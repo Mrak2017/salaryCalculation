@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from "rxjs/index";
 import { PersonsMainService } from "../persons-main.service";
 import { PersonItem } from "../models/person-item.model";
-import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-persons-journal',
@@ -23,7 +22,7 @@ export class PersonsJournalComponent implements OnInit {
 
   persons$: Observable<PersonItem[]>;
 
-  constructor(private service: PersonsMainService, private router: Router) {
+  constructor(private service: PersonsMainService) {
   }
 
   ngOnInit() {
@@ -33,14 +32,5 @@ export class PersonsJournalComponent implements OnInit {
   addPerson() {
     this.service.addPerson();
   }
-
-  editPerson(id: number) {
-    this.router.navigate(['persons', id]);
-  }
-
-  deletePerson(id: number) {
-    this.service.deletePerson(id);
-  }
-
 
 }

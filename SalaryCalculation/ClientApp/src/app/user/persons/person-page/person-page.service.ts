@@ -6,6 +6,7 @@ import { PersonsMainService } from "../persons-main.service";
 import { map, shareReplay, switchMap, take, withLatestFrom } from "rxjs/internal/operators";
 import { ActivatedRoute } from "@angular/router";
 import { ComboBoxItemDTO } from "../../../shared/models/combobox-item-dto";
+import { PersonGroup } from "../models/person-group.model";
 
 @Injectable()
 export class PersonPageService {
@@ -38,7 +39,7 @@ export class PersonPageService {
   updatePerson(person: Person) {
     this.service.updatePerson(person)
         .toPromise()
-        .then(() => this.refreshSubj.next());
+        .then(() => this.refresh());
   }
 
   getPossibleChiefs(): Observable<ComboBoxItemDTO[]> {
@@ -52,18 +53,28 @@ export class PersonPageService {
     )
         .toPromise()
         .then((personId) => this.service.updateChief(personId, newChiefId).toPromise())
-        .then(() => this.refreshSubj.next());
+        .then(() => this.refresh());
   }
 
   addGroup() {
-
+    this.person$.pipe(
+        map(p => p.id),
+        take(1),
+    )
+        .toPromise()
+        .then((personId) => this.service.addGroup(personId))
+        .then(() => this.refresh());
   }
 
   editGroup(id: number) {
-
+    this.service.updateGroup(id).then(() => this.refresh());
   }
 
-  deleteGroup(id: number, groupType: string, periodStart: Date, periodEnd: Date) {
-    
+  deleteGroup(group: PersonGroup) {
+    this.service.deleteGroup(group).then(() => this.refresh());
+  }
+
+  private refresh() {
+    this.refreshSubj.next();
   }
 }

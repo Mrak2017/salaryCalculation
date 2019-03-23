@@ -25,8 +25,7 @@ export class PersonPageComponent extends Subscriber implements OnInit {
   ngOnInit() {
     this.login$ = this.service.person$.pipe(map(p => p.login));
     this.currentGroup$ = this.service.person$.pipe(
-        filter(p => CheckUtils.isExists(p.currentGroup)),
-        map(p => p.currentGroup.name),
+        map(p => CheckUtils.isExists(p.currentGroup) ? p.currentGroup.name : null),
     );
     this.currentSalary$ = this.service.person$.pipe(map(p => p.currentSalary))
   }

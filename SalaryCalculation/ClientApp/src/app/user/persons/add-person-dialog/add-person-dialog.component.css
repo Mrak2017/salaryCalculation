@@ -2,9 +2,3 @@ form,
 mat-form-field {
   width: 100%;
 }
-
-.button-container {
-  margin-top: 20px;
-  display: flex;
-  justify-content: flex-end;
-}

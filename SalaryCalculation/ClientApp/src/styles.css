@@ -35,3 +35,9 @@ body {
 .currency-ru::after {
   content: " ₽";
 }
+
+.button-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}

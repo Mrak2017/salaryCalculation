@@ -12,7 +12,7 @@ import { Person } from "../models/person.model";
 export class AddPersonDialogComponent implements OnInit {
 
   personForm: FormGroup;
-  groupTypes = GroupTypeEnum.values();
+  readonly groupTypes = GroupTypeEnum.values();
   readonly nameMaxLength = Person.NAME_MAX_LENGTH;
 
   constructor(public dialogRef: MatDialogRef<AddPersonDialogComponent>,

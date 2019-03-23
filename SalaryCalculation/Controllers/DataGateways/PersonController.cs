@@ -199,6 +199,39 @@ namespace SalaryCalculation.Controllers
             return null;
         }
 
+        /** Создать новую группу для сотрудника*/
+        public void AddGroup(Person person, Person2Group p2g)
+        {
+            CheckGroupBeforeSave(person, p2g);
+
+            p2g.Person = person;
+            dbContext.Person2Groups.Add(p2g);
+            
+            dbContext.SaveChanges();
+        }
+
+        /** Найти группу по id*/
+        public Person2Group GetPersonGroupById(int id)
+        {
+            return dbContext.Person2Groups.Where(e => e.ID == id).SingleOrDefault();
+        }
+
+        /** Изменить инфомарцию о группе*/
+        public void UpdateGroup(Person2Group p2g)
+        {
+            CheckGroupBeforeSave(p2g.Person, p2g);
+
+            dbContext.Entry(p2g).State = EntityState.Modified;
+            dbContext.SaveChanges();
+        }
+
+        /** Удалить инфомарцию о группе*/
+        public void DeleteGroup(Person2Group p2g)
+        {
+            dbContext.Person2Groups.Remove(p2g);
+            dbContext.SaveChanges();
+        }
+
         /** Пересчитать материализованный путь, для всех записей в таблице орг структуры*/
         public void RecalculateMaterializedPathOrgStructure()
         {
@@ -289,6 +322,24 @@ namespace SalaryCalculation.Controllers
 
                 RecalculateMaterializedPathForFirstLevelSubordinates(item);
             }
+        }
+        /** Проверка уникальности группы для сотрудника в один момент времени*/
+        private void CheckGroupBeforeSave(Person person, Person2Group p2g)
+        {
+            Person2Group[] existed = dbContext.Person2Groups
+               .Where(e =>
+               e.Person == person
+               && p2g.PeriodEnd >= e.PeriodStart
+               && p2g.PeriodStart <= e.PeriodEnd)
+               .ToArray();
+
+            if (existed != null && existed.Length > 0)
+            {
+                string ids = string.Join(",", existed.Select(e => e.ID).ToArray());
+                throw new Exception("У сотрудника не может быть больше 1 группы за период c '" + p2g.PeriodStart
+                    + "' по '" + p2g.PeriodEnd + "'. Список идентификаторов: '" + ids + "'");
+            }
+
         }
     }
 }

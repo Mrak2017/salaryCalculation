@@ -11,6 +11,7 @@ import { PersonPageComponent } from './persons/person-page/person-page.component
 import { PersonMainTabComponent } from './persons/person-page/tabs/person-main-tab/person-main-tab.component';
 import { PersonGroupTabComponent } from './persons/person-page/tabs/person-group-tab/person-group-tab.component';
 import { PersonOrgStructureTabComponent } from './persons/person-page/tabs/person-org-structure-tab/person-org-structure-tab.component';
+import { EditPersonGroupDialogComponent } from './persons/edit-person-group-dialog/edit-person-group-dialog.component';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { PersonOrgStructureTabComponent } from './persons/person-page/tabs/perso
     PersonMainTabComponent,
     PersonGroupTabComponent,
     PersonOrgStructureTabComponent,
+    EditPersonGroupDialogComponent,
   ],
   exports: [
     PersonsJournalComponent,
@@ -38,6 +40,7 @@ import { PersonOrgStructureTabComponent } from './persons/person-page/tabs/perso
   entryComponents: [
     AddPersonDialogComponent,
     EditConfigurationDialogComponent,
+    EditPersonGroupDialogComponent,
   ],
 })
 export class UserModule {
