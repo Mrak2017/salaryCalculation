@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { PersonPageService } from "./person-page.service";
 import { Observable } from "rxjs";
-import { filter, map } from "rxjs/internal/operators";
+import { map } from "rxjs/internal/operators";
 import { Subscriber } from "../../../shared/subscriber";
 import { CheckUtils } from "../../../utils/check-utils";
 
@@ -17,6 +17,7 @@ export class PersonPageComponent extends Subscriber implements OnInit {
   login$: Observable<string>;
   currentGroup$: Observable<string>;
   currentSalary$: Observable<number>;
+  fullName$: Observable<string>;
 
   constructor(private service: PersonPageService) {
     super();
@@ -27,7 +28,8 @@ export class PersonPageComponent extends Subscriber implements OnInit {
     this.currentGroup$ = this.service.person$.pipe(
         map(p => CheckUtils.isExists(p.currentGroup) ? p.currentGroup.name : null),
     );
-    this.currentSalary$ = this.service.person$.pipe(map(p => p.currentSalary))
+    this.currentSalary$ = this.service.person$.pipe(map(p => p.currentSalary));
+    this.fullName$ = this.service.person$.pipe(map(p => p.fullNameDots));
   }
 
 }

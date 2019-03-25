@@ -1,6 +1,7 @@
 import { GroupTypeEnum } from "./group-type-enum";
 import { CheckUtils } from "../../../utils/check-utils";
 import { PersonGroup } from "./person-group.model";
+import { OrgStructureItem } from "./org-structure-item";
 
 export class Person {
   public static readonly NAME_MAX_LENGTH = 100;
@@ -11,6 +12,7 @@ export class Person {
   public firstName: string;
   public middleName: string;
   public lastName: string;
+  public fullNameDots: string;
   public startDate: Date;
   public endDate: Date;
   public currentGroup: GroupTypeEnum;
@@ -18,6 +20,7 @@ export class Person {
   public currentSalary: number;
   public currentChief: Person;
   public groups: PersonGroup[];
+  public children: OrgStructureItem[];
 
   constructor(data: any) {
     if (CheckUtils.isExists(data)) {
@@ -27,6 +30,8 @@ export class Person {
       this.firstName = data.firstName;
       this.middleName = data.middleName;
       this.lastName = data.lastName;
+      const middleName = data.middleName ? ' ' + data.middleName.substring(0,1) + '.' : '';
+      this.fullNameDots = data.lastName + ' ' + data.firstName.substring(0,1) + '.' + middleName;
       this.startDate = new Date(data.startDate);
       this.endDate = CheckUtils.isExists(data.endDate) ? new Date(data.endDate) : null;
       if (CheckUtils.isExists(data.currentGroup)) {
@@ -40,6 +45,10 @@ export class Person {
 
       if (CheckUtils.isExists(data.groups)) {
         this.groups = data.groups.map(val => new PersonGroup(val));
+      }
+
+      if (CheckUtils.isExists(data.children)) {
+        this.children = new OrgStructureItem(data.children);
       }
     }
   }

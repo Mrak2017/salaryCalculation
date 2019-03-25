@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SalaryCalculation.Controllers.RestControllers.DTO;
 using SalaryCalculation.Models;
-using SalaryCalculation.RestControllers.DTO;
 using System;
 using System.Linq;
 
@@ -60,7 +60,8 @@ namespace SalaryCalculation.Controllers
             Person2Group[] groups = controller.GetAllGroups(person);
             Person chief = controller.GetPersonChief(person);
             decimal currentSalary = calculator.CalculateSalary(person, DateTime.Today);
-            return new PersonDTO(person, groups, chief, currentSalary);
+            OrgStructureItemDTO children = GetChildrenOrgStructure(person);
+            return new PersonDTO(person, groups, chief, currentSalary, children);
         }
 
         [HttpPut("[action]/{id}")]
@@ -165,5 +166,15 @@ namespace SalaryCalculation.Controllers
             decimal currentSalary = calculator.CalculateSalary(person, DateTime.Today);
             return new PersonJournalDTO(person, group, currentSalary);
         }
+
+        private OrgStructureItemDTO GetChildrenOrgStructure(Person person)
+        {
+            OrgStructureItemDTO[] children = controller.GetFirstLevelSubordinates(person)
+                .Select(p => GetChildrenOrgStructure(p))
+                .ToArray();
+
+            return new OrgStructureItemDTO(person, children);
+        }
+
     }
 }

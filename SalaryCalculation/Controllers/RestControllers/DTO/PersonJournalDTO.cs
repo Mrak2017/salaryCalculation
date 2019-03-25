@@ -1,7 +1,7 @@
 ﻿using SalaryCalculation.Models;
 using System;
 
-namespace SalaryCalculation.RestControllers.DTO
+namespace SalaryCalculation.Controllers.RestControllers.DTO
 {
     public class PersonJournalDTO
     {

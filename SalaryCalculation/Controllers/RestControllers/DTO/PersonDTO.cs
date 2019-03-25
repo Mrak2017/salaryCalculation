@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace SalaryCalculation.RestControllers.DTO
+namespace SalaryCalculation.Controllers.RestControllers.DTO
 {
     public class PersonDTO
     {
@@ -32,12 +32,14 @@ namespace SalaryCalculation.RestControllers.DTO
 
         public decimal? CurrentSalary { get; set; }
 
+        public OrgStructureItemDTO Children { get; set; }
+
         public PersonDTO()
         {
 
         }
 
-        public PersonDTO(Person person, Person2Group[] groups, Person chief = null, decimal? currentSalary = null)
+        public PersonDTO(Person person, Person2Group[] groups, Person chief = null, decimal? currentSalary = null, OrgStructureItemDTO children = null)
         {
             Id = person.ID;
             Login = person.Login;
@@ -62,6 +64,11 @@ namespace SalaryCalculation.RestControllers.DTO
             if (chief != null)
             {
                 CurrentChief = new PersonDTO(chief, new Person2Group[0]);
+            }
+
+            if (children != null)
+            {
+                Children = children;
             }
         }
     }

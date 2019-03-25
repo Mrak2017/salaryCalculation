@@ -13,6 +13,7 @@ import {
   MatTableModule,
   MatTabsModule,
   MatToolbarModule,
+  MatTreeModule,
 } from "@angular/material";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { SimpleYesNoDialogComponent } from './common-dialogs/simple-yes-no-dialog/simple-yes-no-dialog.component';
@@ -35,6 +36,7 @@ import { RouterModule } from "@angular/router";
     RouterModule,
     MatTabsModule,
     MatCardModule,
+    MatTreeModule,
   ],
   exports: [
     MatToolbarModule,
@@ -53,6 +55,7 @@ import { RouterModule } from "@angular/router";
     RouterModule,
     MatTabsModule,
     MatCardModule,
+    MatTreeModule,
   ],
   declarations: [
     SimpleYesNoDialogComponent,
