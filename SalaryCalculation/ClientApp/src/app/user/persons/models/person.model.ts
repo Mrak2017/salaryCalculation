@@ -48,7 +48,7 @@ export class Person {
       }
 
       if (CheckUtils.isExists(data.children)) {
-        this.children = new OrgStructureItem(data.children);
+        this.children = new OrgStructureItem(0, data.children);
       }
     }
   }

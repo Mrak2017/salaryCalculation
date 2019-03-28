@@ -87,12 +87,21 @@ export class PersonPageService {
         .then(id => this.service.getPossibleSubordinates(id).pipe(take(1)).toPromise());
   }
 
-  addSubordinate(newSubordinateId: number, newSubordinateName: string): Promise {
+  addSubordinate(newSubordinateId: number, newSubordinateName: string): Promise<void> {
     return this.person$.pipe(
         take(1),
     )
         .toPromise()
         .then(person => this.addSubordinateInternal(newSubordinateId, newSubordinateName, person))
+        .then(() => this.refresh());
+  }
+
+  removeSubordinate(id: number, name: string) {
+    return this.person$.pipe(
+        take(1),
+    )
+        .toPromise()
+        .then(person => this.removeSubordinateInternal(id, name, person))
         .then(() => this.refresh());
   }
 
@@ -115,7 +124,27 @@ export class PersonPageService {
         .toPromise();
   }
 
+  private removeSubordinateInternal(id: number, name: string, person: Person) {
+    const message = "Вы уверены, что хотите исключить сотрудника '" + name
+        + "' из списка подчиненных для '" + person.fullNameDots + "? Будет изменена вся ветка иерархии.";
+    const dialogRef = this.dialog.open(SimpleYesNoDialogComponent, {
+      width: '400px',
+      disableClose: true,
+      data: {
+        message: message,
+      },
+    });
+
+    return dialogRef.afterClosed()
+        .pipe(
+            filter(CheckUtils.isExists),
+            switchMap(() => this.service.updateChief(id, 0).pipe(take(1)).toPromise()),
+            take(1))
+        .toPromise();
+  }
+
   private refresh() {
     this.refreshSubj.next();
   }
+
 }

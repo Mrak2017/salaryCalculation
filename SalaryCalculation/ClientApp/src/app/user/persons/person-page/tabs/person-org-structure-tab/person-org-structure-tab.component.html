@@ -11,6 +11,7 @@
           </mat-option>
         </mat-select>
         <button mat-icon-button
+                type="button"
                 class="clear-button"
                 [disabled]="!selectedChief">
           <mat-icon aria-label="Очистить"
@@ -54,6 +55,7 @@
           </mat-select>
           <button mat-icon-button
                   class="clear-button"
+                  type="button"
                   [disabled]="!selectedSubordinate">
             <mat-icon aria-label="Очистить"
                       title="Очистить"
@@ -91,15 +93,29 @@
               class="hierarchy-tree">
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
         <li class="mat-tree-node">
-          <button *ngIf="node.personId !== (personId$ | async); else currentPerson"
-                  [routerLink]="'../' + node.personId"
-                  aria-label="Перейти на страницу сотрудника"
-                  title="Перейти на страницу сотрудника"
-                  [disableRipple]="true"
-                  mat-icon-button>
-            {{node.fullName}}
-            <mat-icon>account_box</mat-icon>
+          <button mat-icon-button
+                  disabled>
+            <!-- Эта кнопка создает отступ для дочерних элементов в иерархии-->
           </button>
+          <div *ngIf="node.personId !== (personId$ | async); else currentPerson">
+            <button [routerLink]="'../' + node.personId"
+                    aria-label="Перейти на страницу сотрудника"
+                    title="Перейти на страницу сотрудника"
+                    type="button"
+                    class="person-card-link"
+                    mat-icon-button>
+              {{node.fullName}}
+              <mat-icon>account_box</mat-icon>
+            </button>
+            <button *ngIf="node.parentId === (personId$ | async)"
+                    type="button"
+                    aria-label="Исключить сотрудника из списка подчиненных"
+                    title="Исключить сотрудника из списка подчиненных"
+                    (click)="removeSubordinate(node.personId, node.fullName)"
+                    mat-icon-button>
+              <mat-icon>remove</mat-icon>
+            </button>
+          </div>
           <ng-template #currentPerson>
             {{node.fullName}}
           </ng-template>
@@ -110,19 +126,32 @@
           <div class="mat-tree-node">
             <button mat-icon-button
                     matTreeNodeToggle
+                    type="button"
                     [attr.aria-label]="'toggle ' + node.fullName">
               <mat-icon class="mat-icon-rtl-mirror">
                 {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
               </mat-icon>
             </button>
-            <button *ngIf="node.personId !== (personId$ | async); else currentPersonNested"
-                    [routerLink]="'../' + node.personId"
-                    aria-label="Перейти на страницу сотрудника"
-                    title="Перейти на страницу сотрудника"
-                    mat-icon-button>
-              {{node.fullName}}
-              <mat-icon>account_box</mat-icon>
-            </button>
+            <div *ngIf="node.personId !== (personId$ | async); else currentPersonNested">
+              <button [routerLink]="'../' + node.personId"
+                      aria-label="Перейти на страницу сотрудника"
+                      title="Перейти на страницу сотрудника"
+                      type="button"
+                      [disableRipple]="true"
+                      class="person-card-link"
+                      mat-icon-button>
+                {{node.fullName}}
+                <mat-icon>account_box</mat-icon>
+              </button>
+              <button *ngIf="node.parentId === (personId$ | async)"
+                      type="button"
+                      aria-label="Исключить сотрудника из списка подчиненных"
+                      title="Исключить сотрудника из списка подчиненных"
+                      (click)="removeSubordinate(node.personId, node.fullName)"
+                      mat-icon-button>
+                <mat-icon>remove</mat-icon>
+              </button>
+            </div>
             <ng-template #currentPersonNested>
               {{node.fullName}}
             </ng-template>

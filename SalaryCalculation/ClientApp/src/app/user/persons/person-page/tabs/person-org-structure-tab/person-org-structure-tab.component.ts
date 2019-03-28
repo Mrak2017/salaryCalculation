@@ -8,7 +8,6 @@ import { Subscriber } from "../../../../../shared/subscriber";
 import { OrgStructureItem } from "../../../models/org-structure-item";
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { MatTreeNestedDataSource } from "@angular/material";
-import { PersonGroup } from "../../../models/person-group.model";
 import { GroupTypeEnum } from "../../../models/group-type-enum";
 
 @Component({
@@ -69,6 +68,10 @@ export class PersonOrgStructureTabComponent extends Subscriber implements OnInit
     }
   }
 
+  removeSubordinate(id: number, name: string) {
+    this.service.removeSubordinate(id, name);
+  }
+
   private fillChiefsData() {
     this.currentChiefId$ = this.service.person$.pipe(
         map(p => CheckUtils.isExists(p.currentChief) ? p.currentChief.id : null),
@@ -92,7 +95,7 @@ export class PersonOrgStructureTabComponent extends Subscriber implements OnInit
     this.currentGroupNotEmployee$ = this.service.person$.pipe(
         map(p => p.currentGroup),
         filter(CheckUtils.isExists),
-        map((val:GroupTypeEnum) => val !== GroupTypeEnum.EMPLOYEE));
+        map((val: GroupTypeEnum) => val !== GroupTypeEnum.EMPLOYEE));
 
     this.subordinates$ = this.service.getPossibleSubordinates();
   }
