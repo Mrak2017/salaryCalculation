@@ -8,6 +8,8 @@ import { Subscriber } from "../../../../../shared/subscriber";
 import { OrgStructureItem } from "../../../models/org-structure-item";
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { MatTreeNestedDataSource } from "@angular/material";
+import { PersonGroup } from "../../../models/person-group.model";
+import { GroupTypeEnum } from "../../../models/group-type-enum";
 
 @Component({
   selector: 'app-person-org-structure-tab',
@@ -29,6 +31,10 @@ export class PersonOrgStructureTabComponent extends Subscriber implements OnInit
 
   hasChild = (_: number, node: OrgStructureItem) => !!node.children && node.children.length > 0;
 
+  currentGroupNotEmployee$: Observable<boolean>;
+  subordinates$: Promise<ComboBoxItemDTO[]>;
+  selectedSubordinate: ComboBoxItemDTO;
+
   constructor(private service: PersonPageService) {
     super();
   }
@@ -39,6 +45,31 @@ export class PersonOrgStructureTabComponent extends Subscriber implements OnInit
         map(p => p.currentGroup.name),
     );
     this.hasCurrentGroup$ = currentGroup$.pipe(map(CheckUtils.isExists));
+    this.personId$ = this.service.person$.pipe(map(p => p.id));
+
+    this.fillChiefsData();
+    this.fillSubordinatesData();
+
+    const childrenSubscription = this.service.person$
+        .pipe(map(p => p.children))
+        .subscribe(children => this.dataSource.data = new Array(children));
+    this.subscribed(childrenSubscription);
+  }
+
+  updateChief() {
+    const newChiefId: number = CheckUtils.isExists(this.selectedChief) ? this.selectedChief.id : 0;
+    this.service.updateChief(newChiefId);
+  }
+
+  addSubordinate() {
+    if (CheckUtils.isExists(this.selectedSubordinate)) {
+      this.service
+          .addSubordinate(this.selectedSubordinate.id, this.selectedSubordinate.name)
+          .then(() => this.selectedSubordinate = null);
+    }
+  }
+
+  private fillChiefsData() {
     this.currentChiefId$ = this.service.person$.pipe(
         map(p => CheckUtils.isExists(p.currentChief) ? p.currentChief.id : null),
         shareReplay(1),
@@ -52,21 +83,18 @@ export class PersonOrgStructureTabComponent extends Subscriber implements OnInit
         shareReplay(1),
     );
 
-    this.personId$ = this.service.person$.pipe(map(p => p.id));
-
     const updateSelectedChiefSubscription = this.chiefs$.pipe(withLatestFrom(this.currentChiefId$))
         .subscribe(([chiefs, id]) => this.selectedChief = chiefs.find(val => val.id === id));
     this.subscribed(updateSelectedChiefSubscription);
-
-    const childrenSubscription = this.service.person$
-        .pipe(map(p => p.children))
-        .subscribe(children => this.dataSource.data = new Array(children));
-    this.subscribed(childrenSubscription);
   }
 
-  updateChief() {
-    const newChiefId: number = CheckUtils.isExists(this.selectedChief) ? this.selectedChief.id : 0;
-    this.service.updateChief(newChiefId);
+  private fillSubordinatesData() {
+    this.currentGroupNotEmployee$ = this.service.person$.pipe(
+        map(p => p.currentGroup),
+        filter(CheckUtils.isExists),
+        map((val:GroupTypeEnum) => val !== GroupTypeEnum.EMPLOYEE));
+
+    this.subordinates$ = this.service.getPossibleSubordinates();
   }
 
 }

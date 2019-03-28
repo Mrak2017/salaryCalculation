@@ -160,6 +160,21 @@ namespace SalaryCalculation.Controllers
             controller.DeleteGroup(p2g);
         }
 
+        [HttpGet("{id}/[action]")]
+        public ComboBoxItemDTO[] GetPossibleSubordinates(int id)
+        {
+            Person person = controller.GetPersonById(id);
+            if (person == null)
+            {
+                throw new Exception("Не удалось найти сотрудника с id '" + id + "'");
+            }
+
+            return controller.GetPossibleSubordinates(person)
+                .Select(sub => new ComboBoxItemDTO(sub))
+                .ToArray();
+        }
+
+        
         private PersonJournalDTO PreparePersonDTO(Person person)
         {
             GroupType? group = controller.GetPersonGroupOnDate(person, DateTime.Today);

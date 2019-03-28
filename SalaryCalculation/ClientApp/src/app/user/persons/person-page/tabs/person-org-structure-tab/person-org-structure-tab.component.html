@@ -1,7 +1,8 @@
-<div>
-  <div class="chief-chooser" *ngIf="hasCurrentGroup$ | async; else noGroup">
+<div class="logical-block">
+  <h3>Редактирование руководителя</h3>
+  <div class="person-chooser" *ngIf="hasCurrentGroup$ | async; else noGroup">
     <div *ngIf="(chiefs$ | async)?.length > 0; else noChiefs">
-      <div class="selected-chief-container">
+      <div class="selected-person-container">
         <mat-select placeholder="Руководитель"
                     [(value)]="selectedChief">
           <mat-option *ngFor="let item of (chiefs$ | async)"
@@ -36,6 +37,53 @@
   </ng-template>
 </div>
 <div>
+  <mat-divider></mat-divider>
+</div>
+<div class="logical-block">
+  <h3>Добавить подчиненного</h3>
+  <div class="person-chooser" *ngIf="hasCurrentGroup$ | async; else noGroupSubordinate">
+    <div *ngIf="currentGroupNotEmployee$ | async; else groupEmployee">
+      <div *ngIf="(subordinates$ | async)?.length > 0; else noSubordinates">
+        <div class="selected-person-container">
+          <mat-select placeholder="Подчиненный"
+                      [(value)]="selectedSubordinate">
+            <mat-option *ngFor="let item of (subordinates$ | async)"
+                        [value]="item">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+          <button mat-icon-button
+                  class="clear-button"
+                  [disabled]="!selectedSubordinate">
+            <mat-icon aria-label="Очистить"
+                      title="Очистить"
+                      class="clickable-item"
+                      (click)="selectedSubordinate = null">clear
+            </mat-icon>
+          </button>
+        </div>
+        <div class="button-container">
+          <button type="button"
+                  mat-button
+                  [disabled]="!selectedSubordinate"
+                  (click)="addSubordinate()">Добавить
+          </button>
+        </div>
+      </div>
+      <ng-template #noSubordinates>
+        <p>Нет доступных подчиненных для выбора.</p>
+      </ng-template>
+    </div>
+    <ng-template #groupEmployee>
+      <p>Невозможно добавить подчиненного, т.к. сотрудник сейчас входит в группу "Сотрудник".</p>
+    </ng-template>
+  </div>
+  <ng-template #noGroupSubordinate>
+    <p>Невозможно добавить подчиненного, т.к. у сотрудника нет группы в данный момент.</p>
+  </ng-template>
+</div>
+<mat-divider></mat-divider>
+<div class="logical-block">
   <h3>Список всех подчиненных</h3>
   <div *ngIf="!!dataSource?.data; else noHierarchy">
     <mat-tree [dataSource]="dataSource"
@@ -43,16 +91,15 @@
               class="hierarchy-tree">
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
         <li class="mat-tree-node">
-          <button mat-icon-button
-                  disabled></button>
-          <a *ngIf="node.personId !== (personId$ | async); else currentPerson"
-             [routerLink]="'../' + node.personId"
-             aria-label="Перейти на страницу сотрудника"
-             title="Перейти на страницу сотрудника"
-             mat-icon-button>
+          <button *ngIf="node.personId !== (personId$ | async); else currentPerson"
+                  [routerLink]="'../' + node.personId"
+                  aria-label="Перейти на страницу сотрудника"
+                  title="Перейти на страницу сотрудника"
+                  [disableRipple]="true"
+                  mat-icon-button>
             {{node.fullName}}
             <mat-icon>account_box</mat-icon>
-          </a>
+          </button>
           <ng-template #currentPerson>
             {{node.fullName}}
           </ng-template>
@@ -68,14 +115,14 @@
                 {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
               </mat-icon>
             </button>
-            <a *ngIf="node.personId !== (personId$ | async); else currentPersonNested"
-               [routerLink]="'../' + node.personId"
-               aria-label="Перейти на страницу сотрудника"
-               title="Перейти на страницу сотрудника"
-               mat-icon-button>
+            <button *ngIf="node.personId !== (personId$ | async); else currentPersonNested"
+                    [routerLink]="'../' + node.personId"
+                    aria-label="Перейти на страницу сотрудника"
+                    title="Перейти на страницу сотрудника"
+                    mat-icon-button>
               {{node.fullName}}
               <mat-icon>account_box</mat-icon>
-            </a>
+            </button>
             <ng-template #currentPersonNested>
               {{node.fullName}}
             </ng-template>

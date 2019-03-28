@@ -64,7 +64,7 @@ export class PersonsMainService {
   }
 
   getPossibleChiefs(): Observable<ComboBoxItemDTO[]> {
-    return this.http.get<any[]>(this.restUrl() + 'GetPossibleChiefs')
+    return this.http.get<ComboBoxItemDTO[]>(this.restUrl() + 'GetPossibleChiefs')
         .pipe(
             map(data => data.map(value => new ComboBoxItemDTO(value.id, value.name))),
         )
@@ -107,6 +107,13 @@ export class PersonsMainService {
             switchMap(() => this.deleteGroupInternal(group.id)),
             take(1))
         .toPromise();
+  }
+
+  getPossibleSubordinates(id: number): Observable<ComboBoxItemDTO[]> {
+    return this.http.get<ComboBoxItemDTO[]>(this.restUrl() + id + '/GetPossibleSubordinates')
+        .pipe(
+            map(data => data.map(value => new ComboBoxItemDTO(value.id, value.name))),
+        )
   }
 
   private getAllPersons(): Observable<PersonItem[]> {

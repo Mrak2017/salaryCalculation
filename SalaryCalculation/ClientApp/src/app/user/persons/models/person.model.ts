@@ -20,7 +20,7 @@ export class Person {
   public currentSalary: number;
   public currentChief: Person;
   public groups: PersonGroup[];
-  public children: OrgStructureItem[];
+  public children: OrgStructureItem;
 
   constructor(data: any) {
     if (CheckUtils.isExists(data)) {

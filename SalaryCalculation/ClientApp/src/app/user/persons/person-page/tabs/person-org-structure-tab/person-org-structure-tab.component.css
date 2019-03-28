@@ -1,12 +1,11 @@
-.chief-chooser {
-  margin: 30px;
+.logical-block {
+  padding: 30px;
+}
+.person-chooser {
+  width: 500px;
 }
 
-.chief-chooser {
-  width: 400px;
-}
-
-.selected-chief-container {
+.selected-person-container {
   display: flex;
 }
 

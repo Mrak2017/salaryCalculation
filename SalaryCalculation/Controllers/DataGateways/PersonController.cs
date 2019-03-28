@@ -213,7 +213,10 @@ namespace SalaryCalculation.Controllers
         /** Найти группу по id*/
         public Person2Group GetPersonGroupById(int id)
         {
-            return dbContext.Person2Groups.Where(e => e.ID == id).SingleOrDefault();
+            return dbContext.Person2Groups
+                .Where(e => e.ID == id)
+                .Include(e => e.Person)
+                .SingleOrDefault();
         }
 
         /** Изменить инфомарцию о группе*/
@@ -230,6 +233,23 @@ namespace SalaryCalculation.Controllers
         {
             dbContext.Person2Groups.Remove(p2g);
             dbContext.SaveChanges();
+        }
+
+        /** Получить список возможных подчиненных для сотрудника*/
+        public Person[] GetPossibleSubordinates(Person person)
+        {
+            Person[] allSubordinates = GetAllSubordinates(person);
+
+            return dbContext.Person2Groups.Where(g =>
+                g.PeriodStart <= DateTime.Today
+                && (g.PeriodEnd == null || g.PeriodEnd >= DateTime.Today)
+                && g.Active == true
+                && g.Person.Active == true
+                && g.Person != person
+                && allSubordinates.Contains(g.Person) == false)
+                .Select(g => g.Person)
+                .Distinct()
+                .ToArray();
         }
 
         /** Пересчитать материализованный путь, для всех записей в таблице орг структуры*/
@@ -328,7 +348,8 @@ namespace SalaryCalculation.Controllers
         {
             Person2Group[] existed = dbContext.Person2Groups
                .Where(e =>
-               e.Person == person
+               person == e.Person
+               && p2g.ID != e.ID
                && p2g.PeriodEnd >= e.PeriodStart
                && p2g.PeriodStart <= e.PeriodEnd)
                .ToArray();
