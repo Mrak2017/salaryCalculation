@@ -41,3 +41,7 @@ body {
   display: flex;
   justify-content: flex-end;
 }
+
+.button-container button{
+  margin: 0 5px;
+}

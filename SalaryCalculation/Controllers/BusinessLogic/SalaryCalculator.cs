@@ -76,10 +76,10 @@ namespace SalaryCalculation.Controllers
 
         private decimal CheckResult(decimal value, Person person)
         {
-            if (value <= 0)
+            if (value < 0)
             {
-                throw new Exception(ERROR_START_TEXT + "При расчете зарплата получилась меньше либо равной нулю для сотрудника: "
-                            + person.Login + ". Проверьте настройки системы");
+                throw new Exception(ERROR_START_TEXT + "При расчете зарплата получилась меньше нуля для сотрудника: "
+                            + person.Login + ". Проверьте настройки системы.");
             }
 
             return value;

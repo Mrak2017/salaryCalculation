@@ -12,6 +12,7 @@ import { PersonMainTabComponent } from './persons/person-page/tabs/person-main-t
 import { PersonGroupTabComponent } from './persons/person-page/tabs/person-group-tab/person-group-tab.component';
 import { PersonOrgStructureTabComponent } from './persons/person-page/tabs/person-org-structure-tab/person-org-structure-tab.component';
 import { EditPersonGroupDialogComponent } from './persons/edit-person-group-dialog/edit-person-group-dialog.component';
+import { CalcPersonSalaryDialogComponent } from './persons/calc-person-salary-dialog/calc-person-salary-dialog.component';
 
 @NgModule({
   imports: [
@@ -28,6 +29,7 @@ import { EditPersonGroupDialogComponent } from './persons/edit-person-group-dial
     PersonGroupTabComponent,
     PersonOrgStructureTabComponent,
     EditPersonGroupDialogComponent,
+    CalcPersonSalaryDialogComponent,
   ],
   exports: [
     PersonsJournalComponent,
@@ -41,6 +43,7 @@ import { EditPersonGroupDialogComponent } from './persons/edit-person-group-dial
     AddPersonDialogComponent,
     EditConfigurationDialogComponent,
     EditPersonGroupDialogComponent,
+    CalcPersonSalaryDialogComponent,
   ],
 })
 export class UserModule {

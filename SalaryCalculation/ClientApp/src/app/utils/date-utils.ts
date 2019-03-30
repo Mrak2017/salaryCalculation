@@ -7,11 +7,15 @@ export class DateUtils {
     return moment(value).locale('ru');
   }
 
-  static formatWithoutTimeZone(value: Date): String {
-    return this.getMoment(value).format("YYYY-MM-DDTHH:mm:ss")
-  }
-
   static formatDateOnly(value: Date): String {
     return this.getMoment(value).format("DD.MM.YYYY");
+  }
+
+  static formatNoTimeZoneDayStart(value: Date): String {
+    return this.getMoment(value).startOf('day').format("YYYY-MM-DDTHH:mm:ss");
+  }
+
+  static formatNoTimeZoneDayEnd(value: Date): String {
+    return this.getMoment(value).endOf('day').format("YYYY-MM-DDTHH:mm:ss");
   }
 }

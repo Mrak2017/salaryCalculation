@@ -19,6 +19,7 @@ export class PersonsJournalComponent implements OnInit {
     'baseSalaryPart',
     'currentSalary',
     'editColumn',
+    'calcSalaryColumn',
   ];
 
   persons$: Observable<PersonItem[]>;
@@ -28,6 +29,7 @@ export class PersonsJournalComponent implements OnInit {
 
   ngOnInit() {
     this.persons$ = this.service.allPersons$;
+    this.service.refresh();
   }
 
   addPerson() {
@@ -38,4 +40,7 @@ export class PersonsJournalComponent implements OnInit {
     this.service.refresh(search);
   }
 
+  calcSalary(id: number) {
+    this.service.calcSalaryDialog(id);
+  }
 }

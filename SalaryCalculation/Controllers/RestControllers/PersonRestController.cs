@@ -174,6 +174,22 @@ namespace SalaryCalculation.Controllers
                 .ToArray();
         }
 
+        [HttpGet("{id}/[action]")]
+        public decimal CalcSalaryOnDate(int id, DateTime? calcDate = null)
+        {
+            Person person = controller.GetPersonById(id);
+            if (person == null)
+            {
+                throw new Exception("Не удалось найти сотрудника с id '" + id + "'");
+            }
+
+            if (calcDate == null)
+            {
+                throw new Exception("Не передана дата для расчета зар платы, для сотрудника с id '" + id + "'");
+            }
+
+            return calculator.CalculateSalary(person, calcDate.Value);
+        }
         
         private PersonJournalDTO PreparePersonDTO(Person person)
         {

@@ -12,6 +12,7 @@ import { DateUtils } from "../../utils/date-utils";
 import { PersonGroup } from "./models/person-group.model";
 import { EditPersonGroupDialogComponent } from "./edit-person-group-dialog/edit-person-group-dialog.component";
 import { SimpleYesNoDialogComponent } from "../../shared/common-dialogs/simple-yes-no-dialog/simple-yes-no-dialog.component";
+import { CalcPersonSalaryDialogComponent } from "./calc-person-salary-dialog/calc-person-salary-dialog.component";
 
 @Injectable()
 export class PersonsMainService {
@@ -117,8 +118,35 @@ export class PersonsMainService {
         )
   }
 
+  calcSalaryDialog(id: number) {
+    this.getPerson(id)
+        .pipe(take(1))
+        .toPromise()
+        .then(person => this.calcSalaryDialogInternal(person));
+  }
+
+  calcSalary(id: number, calcDate: Date): Observable<number> {
+    return this.http.get<number>(
+        this.restUrl() + id + '/CalcSalaryOnDate?calcDate=' + DateUtils.formatNoTimeZoneDayStart(calcDate));
+  }
+
+  private calcSalaryDialogInternal(person: Person) {
+    const dialogRef = this.dialog.open(CalcPersonSalaryDialogComponent, {
+      width: '400px',
+      disableClose: true,
+      data: {
+        person: person,
+        calcSalaryFunction: (id: number, calcDate: Date) => this.calcSalary(id, calcDate),
+      },
+    });
+
+    dialogRef.afterClosed()
+        .toPromise()
+        .then(() => this.refresh());
+  }
+
   private getAllPersons(search: string = null): Observable<PersonItem[]> {
-    const param  = CheckUtils.isExists(search) ? "?q="+search : "";
+    const param = CheckUtils.isExists(search) ? "?q=" + search : "";
     return this.http.get<PersonItem[]>(this.restUrl() + 'GetAllPersons' + param)
         .pipe(
             map(data => data.map(value => new PersonItem(value))),
@@ -141,8 +169,8 @@ export class PersonsMainService {
             map((result: PersonGroup) => (
                 {
                   id: result.id,
-                  periodStart: DateUtils.formatWithoutTimeZone(result.periodStart),
-                  periodEnd: CheckUtils.isExists(result.periodEnd) ? DateUtils.formatWithoutTimeZone(result.periodEnd) : null,
+                  periodStart: DateUtils.formatNoTimeZoneDayStart(result.periodStart),
+                  periodEnd: CheckUtils.isExists(result.periodEnd) ? DateUtils.formatNoTimeZoneDayEnd(result.periodEnd) : null,
                   groupType: CheckUtils.isExists(result.group) ? result.group.code : null,
                 })),
             switchMap(dto => callback(dto)),
@@ -162,8 +190,8 @@ export class PersonsMainService {
       firstName: person.firstName,
       middleName: person.middleName,
       lastName: person.lastName,
-      startDate: DateUtils.formatWithoutTimeZone(person.startDate),
-      endDate: CheckUtils.isExists(person.endDate) ? DateUtils.formatWithoutTimeZone(person.endDate) : null,
+      startDate: DateUtils.formatNoTimeZoneDayStart(person.startDate),
+      endDate: CheckUtils.isExists(person.endDate) ? DateUtils.formatNoTimeZoneDayEnd(person.endDate) : null,
       currentGroup: CheckUtils.isExists(person.currentGroup) ? person.currentGroup.code : null,
       baseSalaryPart: person.baseSalaryPart,
     };
@@ -172,5 +200,4 @@ export class PersonsMainService {
   private restUrl(): string {
     return this.baseUrl + 'api/persons/';
   }
-
 }
