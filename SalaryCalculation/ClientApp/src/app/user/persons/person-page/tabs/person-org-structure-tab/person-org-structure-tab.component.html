@@ -23,7 +23,8 @@
       </div>
       <div class="button-container">
         <button type="button"
-                mat-button
+                mat-raised-button
+                color="primary"
                 [disabled]="selectedChief && selectedChief.id === (currentChiefId$ | async)"
                 (click)="updateChief()">Изменить руководителя
         </button>
@@ -66,7 +67,8 @@
         </div>
         <div class="button-container">
           <button type="button"
-                  mat-button
+                  mat-raised-button
+                  color="primary"
                   [disabled]="!selectedSubordinate"
                   (click)="addSubordinate()">Добавить
           </button>

@@ -155,7 +155,7 @@ export class PersonsMainService {
 
   private editGroupDialog(group: PersonGroup = new PersonGroup(), title: string, callback: Function): Promise<{}> {
     const dialogRef = this.dialog.open(EditPersonGroupDialogComponent, {
-      width: '400px',
+      width: '500px',
       disableClose: true,
       data: {
         group: group,
