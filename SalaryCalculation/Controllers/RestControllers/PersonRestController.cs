@@ -19,9 +19,9 @@ namespace SalaryCalculation.Controllers
         }
 
         [HttpGet("[action]")]
-        public PersonJournalDTO[] GetAllPersons()
+        public PersonJournalDTO[] GetAllPersons(string q = "")
         {
-            return controller.GetAllPersons()
+            return controller.GetAllPersons(q)
                 .Select(person => PreparePersonDTO(person)).ToArray();
         }
         

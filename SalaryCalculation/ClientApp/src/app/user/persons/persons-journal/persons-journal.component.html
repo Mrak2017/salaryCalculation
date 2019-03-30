@@ -1,4 +1,10 @@
 <div class="journal-form">
+  <mat-form-field class="search-field">
+    <input matInput
+           (keyup)="applyFilter($event.target.value)"
+           placeholder="Введите фамилию для поиска...">
+  </mat-form-field>
+
   <table mat-table [dataSource]="persons$ | async" class="mat-elevation-z8">
 
     <ng-container matColumnDef="id">

@@ -18,7 +18,8 @@ export class PersonsJournalComponent implements OnInit {
     'currentGroup',
     'baseSalaryPart',
     'currentSalary',
-    'editColumn'];
+    'editColumn',
+  ];
 
   persons$: Observable<PersonItem[]>;
 
@@ -31,6 +32,10 @@ export class PersonsJournalComponent implements OnInit {
 
   addPerson() {
     this.service.addPerson();
+  }
+
+  applyFilter(search: string) {
+    this.service.refresh(search);
   }
 
 }

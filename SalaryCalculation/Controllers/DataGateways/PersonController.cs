@@ -90,9 +90,11 @@ namespace SalaryCalculation.Controllers
         }
 
         /** Получить всех сотрудников*/
-        public Person[] GetAllPersons()
+        public Person[] GetAllPersons(string search = "")
         {
-            return dbContext.Persons.ToArray();
+            return dbContext.Persons
+                .Where(p => EF.Functions.Like(p.LastName, "%" + search + "%"))
+                .ToArray();
         }
 
         /** Создать нового сотрудника*/

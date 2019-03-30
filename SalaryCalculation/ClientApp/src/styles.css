@@ -10,7 +10,7 @@ body {
 
 .journal-form {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
   height: 100%;
 }
 

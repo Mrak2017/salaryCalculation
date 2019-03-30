@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { merge, Observable, Subject } from "rxjs/index";
-import { filter, map, shareReplay, switchMap, take } from "rxjs/internal/operators";
+import { debounceTime, filter, map, shareReplay, switchMap, take } from "rxjs/internal/operators";
 import { MatDialog } from "@angular/material";
 import { AddPersonDialogComponent } from "./add-person-dialog/add-person-dialog.component";
 import { CheckUtils } from "../../utils/check-utils";
@@ -18,13 +18,14 @@ export class PersonsMainService {
 
   public readonly allPersons$: Observable<PersonItem[]>;
 
-  private readonly refreshSubj: Subject<void> = new Subject<void>();
+  private readonly refreshSubj: Subject<string> = new Subject<string>();
 
   constructor(private http: HttpClient,
               @Inject('BASE_URL') private baseUrl: string,
               private dialog: MatDialog) {
     const refreshed$ = this.refreshSubj.asObservable().pipe(
-        switchMap(() => this.getAllPersons()),
+        debounceTime(300),
+        switchMap(search => this.getAllPersons(search)),
     );
 
     const initial$ = this.getAllPersons();
@@ -32,8 +33,8 @@ export class PersonsMainService {
     this.allPersons$ = merge(initial$, refreshed$).pipe(shareReplay(1));
   }
 
-  refresh() {
-    this.refreshSubj.next();
+  refresh(search: string = "") {
+    this.refreshSubj.next(search);
   }
 
   addPerson() {
@@ -116,8 +117,9 @@ export class PersonsMainService {
         )
   }
 
-  private getAllPersons(): Observable<PersonItem[]> {
-    return this.http.get<PersonItem[]>(this.restUrl() + 'GetAllPersons')
+  private getAllPersons(search: string = null): Observable<PersonItem[]> {
+    const param  = CheckUtils.isExists(search) ? "?q="+search : "";
+    return this.http.get<PersonItem[]>(this.restUrl() + 'GetAllPersons' + param)
         .pipe(
             map(data => data.map(value => new PersonItem(value))),
         )
