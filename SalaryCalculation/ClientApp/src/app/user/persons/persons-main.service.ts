@@ -13,6 +13,7 @@ import { PersonGroup } from "./models/person-group.model";
 import { EditPersonGroupDialogComponent } from "./edit-person-group-dialog/edit-person-group-dialog.component";
 import { SimpleYesNoDialogComponent } from "../../shared/common-dialogs/simple-yes-no-dialog/simple-yes-no-dialog.component";
 import { CalcPersonSalaryDialogComponent } from "./calc-person-salary-dialog/calc-person-salary-dialog.component";
+import { CalcTotalSalaryDialogComponent } from "./calc-total-salary-dialog/calc-total-salary-dialog.component";
 
 @Injectable()
 export class PersonsMainService {
@@ -125,9 +126,18 @@ export class PersonsMainService {
         .then(person => this.calcSalaryDialogInternal(person));
   }
 
-  calcSalary(id: number, calcDate: Date): Observable<number> {
-    return this.http.get<number>(
-        this.restUrl() + id + '/CalcSalaryOnDate?calcDate=' + DateUtils.formatNoTimeZoneDayStart(calcDate));
+  calcTotalSalaryDialog() {
+    const dialogRef = this.dialog.open(CalcTotalSalaryDialogComponent, {
+      width: '500px',
+      disableClose: true,
+      data: {
+        calcSalaryFunction: (calcDate: Date) => this.calcTotalSalary(calcDate),
+      },
+    });
+
+    dialogRef.afterClosed()
+        .toPromise()
+        .then(() => this.refresh());
   }
 
   private calcSalaryDialogInternal(person: Person) {
@@ -180,6 +190,16 @@ export class PersonsMainService {
 
   private deleteGroupInternal(id: number): Observable<void> {
     return this.http.delete<void>(this.restUrl() + 'DeleteGroup/' + id);
+  }
+
+  private calcSalary(id: number, calcDate: Date): Observable<number> {
+    return this.http.get<number>(
+        this.restUrl() + id + '/CalcSalaryOnDate?calcDate=' + DateUtils.formatNoTimeZoneDayStart(calcDate));
+  }
+
+  private calcTotalSalary(calcDate: Date): Observable<number> {
+    return this.http.get<number>(
+        this.restUrl() + 'CalcTotalSalaryOnDate?calcDate=' + DateUtils.formatNoTimeZoneDayStart(calcDate));
   }
 
   private static convertToDTO(person: Person) {

@@ -190,7 +190,18 @@ namespace SalaryCalculation.Controllers
 
             return calculator.CalculateSalary(person, calcDate.Value);
         }
-        
+
+        [HttpGet("[action]")]
+        public decimal CalcTotalSalaryOnDate(DateTime? calcDate = null)
+        {
+            if (calcDate == null)
+            {
+                throw new Exception("Не передана дата для расчета общей зар платы по фирме'");
+            }
+
+            return calculator.CalculateTotalSalary(calcDate.Value);
+        }
+
         private PersonJournalDTO PreparePersonDTO(Person person)
         {
             GroupType? group = controller.GetPersonGroupOnDate(person, DateTime.Today);

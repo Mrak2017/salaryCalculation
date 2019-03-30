@@ -43,4 +43,8 @@ export class PersonsJournalComponent implements OnInit {
   calcSalary(id: number) {
     this.service.calcSalaryDialog(id);
   }
+
+  calcTotalSalary() {
+    this.service.calcTotalSalaryDialog();
+  }
 }
