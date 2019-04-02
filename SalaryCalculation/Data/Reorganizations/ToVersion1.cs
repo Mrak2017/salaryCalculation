@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SalaryCalculation.Models.DataReorganizations
 {
+    /** Реорганизация по заполнению данных при обновлении программы на версию 1*/
     public class ToVersion1 : ReorganizationMain
     {
         private readonly ConfigurationController controller;
@@ -20,6 +21,7 @@ namespace SalaryCalculation.Models.DataReorganizations
             InitConfiguration();
         }
 
+        /** Заполнение дефолтных настроек системы*/
         private void InitConfiguration()
         {
             InitBaseSalaryConfig();

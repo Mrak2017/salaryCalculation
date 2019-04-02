@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 
 namespace SalaryCalculation.Models
 {
+    /** Класс для инициализации и заполнения базы данных*/
     public static class DbInitializer
     {
+        /** 1) Создание базы данных если не существует
+         2) Выполнение реорганизация (миграция) в случае обновления версии программы (ревизии данных)*/
         public static void Initialize(SalaryCalculationDBContext context, int currentVersion)
         {
             context.Database.EnsureCreated();

@@ -1,14 +1,13 @@
 ﻿using SalaryCalculation.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SalaryCalculation.Controllers
 {
     /** Основной класс для расчета заработной платы сотрудников*/
     public class SalaryCalculator
     {
+        /** Префикс для текста ошибок*/
         private const string ERROR_START_TEXT = "Ошибка при расчете заработной платы. ";
 
         private readonly PersonController personController;
@@ -20,6 +19,7 @@ namespace SalaryCalculation.Controllers
             configurationController = new ConfigurationController(dbContext);
         }
 
+        /** Расчет зар платы по всеё фирме, на опредленную дату*/
         public decimal CalculateTotalSalary(DateTime onDate)
         {
             Dictionary<Tuple<Person, DateTime>, decimal> calculationCache = new Dictionary<Tuple<Person, DateTime>, decimal>();
@@ -44,6 +44,7 @@ namespace SalaryCalculation.Controllers
             return result;
         }
 
+        /** Расчет зар платы по одному сотруднику на определенную дату*/
         public decimal CalculateSalary(Person person, DateTime onDate)
         {
             GroupType? currentGroup = personController.GetPersonGroupOnDate(person, onDate);
@@ -74,6 +75,7 @@ namespace SalaryCalculation.Controllers
             return CheckResult(result, person);
         }
 
+        /** Проверка результата после расчета зар. платы*/
         private decimal CheckResult(decimal value, Person person)
         {
             if (value < 0)
@@ -85,6 +87,8 @@ namespace SalaryCalculation.Controllers
             return value;
         }
 
+        /** Расчет базовой ставки сотрудника 
+         * (если не заполнена в Person, то дефолтное значение берется из настроек)*/
         private decimal CalculateSalaryBasePart(GroupType group, DateTime onDate, Person person)
         {
             int workedYears = DateUtils.GetFullYearsBetweenDates(person.StartDate, onDate);
@@ -100,6 +104,8 @@ namespace SalaryCalculation.Controllers
             return baseSalary + (workExpResultRatio * baseSalary);
         }
 
+        /** Расчет надбавки для менеджера за непосредственных подчиненных 
+         * (процент от зар платы подчиненных 1го уровня, согласно настроек)*/
         private decimal CalculateManagerSalaryAddition(Person person, GroupType group, DateTime onDate)
         {
             decimal subordinateRatio = GetSubordinateRatioByGroup(group);
@@ -112,6 +118,8 @@ namespace SalaryCalculation.Controllers
             return result * subordinateRatio;
         }
 
+        /** Расчет надбавки для продажника за всех подчиненных 
+         * (процент от зар платы подчиненных всех уровней, согласно настроек)*/
         private decimal CalculateSalesmanSalaryAddition(Person person, GroupType group, DateTime onDate)
         {
             decimal subordinateRatio = GetSubordinateRatioByGroup(group);
@@ -124,24 +132,28 @@ namespace SalaryCalculation.Controllers
             return result * subordinateRatio;
         }
 
+        /** Получение базовой ставки зар платы из настроек, согласно группы сотрудника*/
         private decimal GetBaseSalaryByGroup(GroupType group)
         {
             return configurationController
                 .GetConfigurationDecimalOrDefault(group.ToString() + ConfigurationController.BASE_SALARY_POSTFIX, 0);
         }
 
+        /** Получение коэффициента надбавки за выслугу лет из настроек, по группе сотрудника*/
         private decimal GetWorkExperienceRatioByGroup(GroupType group)
         {
             return configurationController
                 .GetConfigurationDecimalOrDefault(group.ToString() + ConfigurationController.WORK_EXPERIENCE_RATIO_POSTFIX, 0) / 100;
         }
 
+        /** Получение максимального коэффициента надбавки за выслугу лет из настроек, по группе сотрудника*/
         private decimal GetWorkExperienceMaxRatioByGroup(GroupType group)
         {
             return configurationController
                 .GetConfigurationDecimalOrDefault(group.ToString() + ConfigurationController.WORK_EXPERIENCE_MAX_RATIO_POSTFIX, 0) / 100;
         }
 
+        /** Получение коэффициента надбавки за подчиненных, по группе сотрудника*/
         private decimal GetSubordinateRatioByGroup(GroupType group)
         {
             return configurationController
